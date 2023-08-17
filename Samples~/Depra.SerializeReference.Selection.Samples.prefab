@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5996749831859146152}
-  - component: {fileID: 3351977072404778876}
+  - component: {fileID: 7341436316164302174}
   m_Layer: 0
   m_Name: Depra.SerializeReference.Selection.Samples
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3351977072404778876
+--- !u!114 &7341436316164302174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,15 +44,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884d3b2c3a641c84e94ad2b9c10a67e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interface:
-    rid: -2
-  _abstractClass:
-    rid: 5583643706345127936
+  _command:
+    rid: 5583643708317499393
+  _commands:
+  - rid: 5583643708317499394
+  - rid: 5583643708317499395
+  - rid: 5583643708317499396
+  - rid: 5583643708317499398
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
-    - rid: 5583643706345127936
-      type: {class: SerializeReferenceSamples/ClassImplementation, ns: Depra.Serialization.ReferenceExtensions.Samples, asm: Depra.Serialization.ReferenceExtensions.Samples}
+    - rid: 5583643708317499393
+      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+      data: 
+    - rid: 5583643708317499394
+      type: {class: StructCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+      data: 
+    - rid: 5583643708317499395
+      type: {class: ClassCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+      data:
+        _message: 
+    - rid: 5583643708317499396
+      type: {class: RecordCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+      data: 
+    - rid: 5583643708317499398
+      type: {class: CommandWithCustomTypeMenu, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
       data: 

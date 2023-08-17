@@ -9,26 +9,55 @@ namespace Depra.SerializeReference.Selection.Samples
 {
 	internal sealed class SerializeReferenceSelectionSamples : MonoBehaviour
 	{
-		[SubclassSelection]
-		[UnityEngine.SerializeReference] private IInterface _interface;
+		[UnityEngine.SerializeReference] [SubclassSelection]
+		private ISampleCommand _command;
 
-		[SubclassSelection]
-		[UnityEngine.SerializeReference] private AbstractClass _abstractClass;
+		[UnityEngine.SerializeReference] [SubclassSelection]
+		private ISampleCommand[] _commands;
 
-		internal abstract class AbstractClass { }
-
-		[Serializable]
-		[AddTypeMenu(nameof(ClassImplementation))]
-		public sealed class ClassImplementation : AbstractClass { }
-
-		private interface IInterface { }
-
-		[Serializable]
-		[AddTypeMenu(nameof(ClassInterfaceImplementation))]
-		public sealed class ClassInterfaceImplementation : IInterface { }
+		private void Start()
+		{
+			_command?.Execute();
+			foreach (var command in _commands)
+			{
+				command?.Execute();
+			}
+		}
 
 		[Serializable]
-		[AddTypeMenu(nameof(RecordInterfaceImplementation))]
-		public sealed record RecordInterfaceImplementation : IInterface { }
+		public sealed class NestedCommand : ISampleCommand
+		{
+			void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(NestedCommand)}");
+		}
+	}
+
+	internal interface ISampleCommand
+	{
+		void Execute();
+	}
+
+	[Serializable]
+	public sealed class ClassCommand : ISampleCommand
+	{
+		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(ClassCommand)}");
+	}
+
+	[Serializable]
+	[AddTypeMenu(nameof(CommandWithCustomTypeMenu))]
+	public sealed class CommandWithCustomTypeMenu : ISampleCommand
+	{
+		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(CommandWithCustomTypeMenu)}");
+	}
+
+	[Serializable]
+	public readonly struct StructCommand : ISampleCommand
+	{
+		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(StructCommand)}");
+	}
+
+	[Serializable]
+	public sealed record RecordCommand : ISampleCommand
+	{
+		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(RecordCommand)}");
 	}
 }
