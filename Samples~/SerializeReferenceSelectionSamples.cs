@@ -9,10 +9,10 @@ namespace Depra.SerializeReference.Selection.Samples
 {
 	internal sealed class SerializeReferenceSelectionSamples : MonoBehaviour
 	{
-		[UnityEngine.SerializeReference] [SubclassSelection]
+		[UnityEngine.SerializeReference] [SubtypeMenu]
 		private ISampleCommand _command;
 
-		[UnityEngine.SerializeReference] [SubclassSelection]
+		[UnityEngine.SerializeReference] [SubtypeMenu]
 		private ISampleCommand[] _commands;
 
 		private void Start()
@@ -43,7 +43,7 @@ namespace Depra.SerializeReference.Selection.Samples
 	}
 
 	[Serializable]
-	[AddTypeMenu(nameof(CommandWithCustomTypeMenu))]
+	[SubtypeMenuAlias(nameof(CommandWithCustomTypeMenu))]
 	public sealed class CommandWithCustomTypeMenu : ISampleCommand
 	{
 		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(CommandWithCustomTypeMenu)}");

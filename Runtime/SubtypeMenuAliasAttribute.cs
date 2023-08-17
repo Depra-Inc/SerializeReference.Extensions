@@ -6,14 +6,14 @@ using System;
 namespace Depra.SerializeReference.Selection.Runtime
 {
 	/// <summary>
-	/// An attribute that overrides the type name and category displayed in the <see cref="SubclassSelectionAttribute"/> popup.
+	/// An attribute that overrides the type name and category displayed in the <see cref="SubtypeMenuAttribute"/> popup.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Interface,Inherited = false)]
-	public sealed class AddTypeMenuAttribute : Attribute
+	public sealed class SubtypeMenuAliasAttribute : Attribute
 	{
 		private static readonly char[] SEPARATORS = { '/' };
 
-		public AddTypeMenuAttribute(string menuName, int order = 0)
+		public SubtypeMenuAliasAttribute(string menuName, int order = 0)
 		{
 			MenuName = menuName;
 			Order = order;

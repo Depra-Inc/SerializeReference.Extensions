@@ -14,11 +14,11 @@ namespace Depra.SerializeReference.Selection.Editor.Extensions
 		public const string NULL_DISPLAY_NAME = "<null>";
 		private static readonly Type UNITY_OBJECT_TYPE = typeof(UnityEngine.Object);
 
-		public static AddTypeMenuAttribute GetTypeMenuAttribute(this Type self) =>
-			Attribute.GetCustomAttribute(self, typeof(AddTypeMenuAttribute)) as AddTypeMenuAttribute;
-
 		public static IEnumerable<Type> OrderByType(this IEnumerable<Type> self) =>
-			self.OrderBy(type => type == null ? -999 : GetTypeMenuAttribute(type)?.Order ?? 0);
+			self.OrderBy(type => type == null ? -999 : GetTypeMenuAliasAttribute(type)?.Order ?? 0);
+
+		public static SubtypeMenuAliasAttribute GetTypeMenuAliasAttribute(this Type self) =>
+			Attribute.GetCustomAttribute(self, typeof(SubtypeMenuAliasAttribute)) as SubtypeMenuAliasAttribute;
 
 		public static IEnumerable<Type> GetDerivedTypes(this Type self) => TypeCache
 			.GetTypesDerivedFrom(self)
@@ -31,7 +31,7 @@ namespace Depra.SerializeReference.Selection.Editor.Extensions
 
 		public static string[] SplitTypePath(this Type self)
 		{
-			var typeMenu = GetTypeMenuAttribute(self);
+			var typeMenu = GetTypeMenuAliasAttribute(self);
 			if (typeMenu != null)
 			{
 				return typeMenu.SplitMenuName();

@@ -12,8 +12,8 @@ using UnityEngine;
 
 namespace Depra.SerializeReference.Selection.Editor.Drawers
 {
-	[CustomPropertyDrawer(typeof(SubclassSelectionAttribute))]
-	internal sealed class SubclassSelectionDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(SubtypeMenuAttribute))]
+	internal sealed class SubtypeMenuDrawer : PropertyDrawer
 	{
 		private const int MAX_TYPE_POPUP_LINE_COUNT = 13;
 		private static readonly GUIContent NULL_DISPLAY_NAME = new(TypeExtensions.NULL_DISPLAY_NAME);
@@ -122,7 +122,7 @@ namespace Depra.SerializeReference.Selection.Editor.Drawers
 
 		private static bool TryGetTypeNameWithoutPath(Type type, out string typeName)
 		{
-			var typeMenu = type.GetTypeMenuAttribute();
+			var typeMenu = type.GetTypeMenuAliasAttribute();
 			if (typeMenu == null)
 			{
 				typeName = string.Empty;
