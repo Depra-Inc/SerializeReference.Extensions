@@ -1,0 +1,18 @@
+{
+    "name": "Depra.SerializeReference.Selection.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:47f3b0f3b769b274483ca3dcb73bde9e"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
