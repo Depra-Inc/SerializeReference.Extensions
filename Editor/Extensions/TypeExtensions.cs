@@ -4,18 +4,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Depra.SerializeReference.Selection.Runtime;
+using Depra.SerializedReference.Dropdown.Runtime;
 using UnityEditor;
 
-namespace Depra.SerializeReference.Selection.Editor.Extensions
+namespace Depra.SerializedReference.Dropdown.Editor.Extensions
 {
 	internal static class TypeExtensions
 	{
-		public const string NULL_DISPLAY_NAME = "<null>";
+		private const int NULL_ORDER = -999;
 		private static readonly Type UNITY_OBJECT_TYPE = typeof(UnityEngine.Object);
 
 		public static IEnumerable<Type> OrderByType(this IEnumerable<Type> self) =>
-			self.OrderBy(type => type == null ? -999 : GetTypeMenuAliasAttribute(type)?.Order ?? 0);
+			self.OrderBy(type => type == null
+				? NULL_ORDER
+				: GetTypeMenuAliasAttribute(type)?.Order ?? SubtypeMenuAliasAttribute.DEFAULT_ORDER);
 
 		public static SubtypeMenuAliasAttribute GetTypeMenuAliasAttribute(this Type self) =>
 			Attribute.GetCustomAttribute(self, typeof(SubtypeMenuAliasAttribute)) as SubtypeMenuAliasAttribute;

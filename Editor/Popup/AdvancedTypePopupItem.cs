@@ -4,7 +4,7 @@
 using System;
 using UnityEditor.IMGUI.Controls;
 
-namespace Depra.SerializeReference.Selection.Editor.Popup
+namespace Depra.SerializedReference.Dropdown.Editor.Popup
 {
 	internal sealed class AdvancedTypePopupItem : AdvancedDropdownItem
 	{

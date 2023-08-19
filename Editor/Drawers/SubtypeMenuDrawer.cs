@@ -3,22 +3,21 @@
 
 using System;
 using System.Collections.Generic;
-using Depra.SerializeReference.Selection.Editor.Extensions;
-using Depra.SerializeReference.Selection.Editor.Popup;
-using Depra.SerializeReference.Selection.Runtime;
+using Depra.SerializedReference.Dropdown.Editor.Popup;
+using Depra.SerializedReference.Dropdown.Runtime;
+using Depra.SerializedReference.Dropdown.Editor.Extensions;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.SerializeReference.Selection.Editor.Drawers
+namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 {
 	[CustomPropertyDrawer(typeof(SubtypeMenuAttribute))]
 	internal sealed class SubtypeMenuDrawer : PropertyDrawer
 	{
 		private const int MAX_TYPE_POPUP_LINE_COUNT = 13;
-		private static readonly GUIContent NULL_DISPLAY_NAME = new(TypeExtensions.NULL_DISPLAY_NAME);
-		private static readonly GUIContent IS_NOT_MANAGED_REFERENCE_LABEL =
-			new("The property type is not manage reference.");
+		private static readonly GUIContent NULL_DISPLAY_NAME = new(SubtypeMenuAliasAttribute.NULL_DISPLAY_NAME);
+		private static readonly GUIContent IS_NOT_MANAGED_REFERENCE_LABEL = new("The property type is not manage reference.");
 
 		private readonly Dictionary<string, TypePopupCache> _typePopups = new();
 		private readonly Dictionary<string, GUIContent> _typeNameCaches = new();
@@ -69,9 +68,9 @@ namespace Depra.SerializeReference.Selection.Editor.Drawers
 
 		private TypePopupCache GetTypePopup(SerializedProperty property)
 		{
-			if (_typePopups.TryGetValue(property.managedReferenceFieldTypename, out var result))
+			if (_typePopups.TryGetValue(property.managedReferenceFieldTypename, out var typePopup))
 			{
-				return result;
+				return typePopup;
 			}
 
 			var state = new AdvancedDropdownState();
@@ -83,7 +82,7 @@ namespace Depra.SerializeReference.Selection.Editor.Drawers
 
 			_typePopups.Add(property.managedReferenceFieldTypename, new TypePopupCache(popup, state));
 
-			return result;
+			return typePopup;
 
 			void OnItemCreated(AdvancedTypePopupItem item)
 			{

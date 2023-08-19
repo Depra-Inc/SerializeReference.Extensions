@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Depra.SerializeReference.Selection.Editor.Extensions;
+using Depra.SerializedReference.Dropdown.Editor.Extensions;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.SerializeReference.Selection.Editor.Popup
+namespace Depra.SerializedReference.Dropdown.Editor.Popup
 {
 	/// <summary>
 	/// A type popup with a fuzzy finder.

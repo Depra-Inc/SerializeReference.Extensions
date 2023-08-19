@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Depra.SerializeReference.Selection.Editor.Popup;
+using Depra.SerializedReference.Dropdown.Editor.Popup;
+using Depra.SerializedReference.Dropdown.Runtime;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
-namespace Depra.SerializeReference.Selection.Editor.Extensions
+namespace Depra.SerializedReference.Dropdown.Editor.Extensions
 {
 	internal static class AdvancedDropdownExtensions
 	{
@@ -25,7 +26,7 @@ namespace Depra.SerializeReference.Selection.Editor.Extensions
 		}
 
 		private static void AddNullTypeItem(AdvancedDropdownItem root, ref int itemCount) =>
-			root.AddChild(new AdvancedTypePopupItem(null, TypeExtensions.NULL_DISPLAY_NAME)
+			root.AddChild(new AdvancedTypePopupItem(null, SubtypeMenuAliasAttribute.NULL_DISPLAY_NAME)
 				{ id = itemCount++ });
 
 		private static void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, ref int itemCount)

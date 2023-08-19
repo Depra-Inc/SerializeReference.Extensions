@@ -1,17 +1,13 @@
 {
-    "name": "Depra.SerializeReference.Selection.Editor",
+    "name": "Depra.SerializedReference.Dropdown.Runtime",
     "rootNamespace": "",
-    "references": [
-        "GUID:47f3b0f3b769b274483ca3dcb73bde9e"
-    ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "references": [],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

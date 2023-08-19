@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Depra.SerializeReference.Selection.Editor.Exceptions
+namespace Depra.SerializedReference.Dropdown.Editor.Exceptions
 {
 	internal sealed class SerializedPropertyTypeMustBeManagedReference : ArgumentException
 	{
