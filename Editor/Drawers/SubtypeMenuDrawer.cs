@@ -19,8 +19,8 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 		private static readonly GUIContent NULL_DISPLAY_NAME = new(SubtypeMenuAliasAttribute.NULL_DISPLAY_NAME);
 		private static readonly GUIContent IS_NOT_MANAGED_REFERENCE_LABEL = new("The property type is not manage reference.");
 
-		private readonly Dictionary<string, TypePopupCache> _typePopups = new();
 		private readonly Dictionary<string, GUIContent> _typeNameCaches = new();
+		private readonly Dictionary<string, AdvancedTypePopup> _typePopups = new();
 
 		private SerializedProperty _targetProperty;
 
@@ -60,27 +60,26 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 			if (EditorGUI.DropdownButton(popupPosition, GetTypeName(property), FocusType.Keyboard))
 			{
 				_targetProperty = property;
-				popup.TypePopup.Show(popupPosition);
+				popup.Show(popupPosition);
 			}
 
 			EditorGUI.PropertyField(position, property, label, true);
 		}
 
-		private TypePopupCache GetTypePopup(SerializedProperty property)
+		private AdvancedTypePopup GetTypePopup(SerializedProperty property)
 		{
 			if (_typePopups.TryGetValue(property.managedReferenceFieldTypename, out var typePopup))
 			{
 				return typePopup;
 			}
 
-			var state = new AdvancedDropdownState();
 			var baseType = property.GetManagedReferenceFieldType();
 			var types = baseType.GetDerivedTypes();
-			var popup = new AdvancedTypePopup(types, MAX_TYPE_POPUP_LINE_COUNT, state);
+			var popup = new AdvancedTypePopup(types, MAX_TYPE_POPUP_LINE_COUNT, new AdvancedDropdownState());
 
 			popup.OnItemSelected += OnItemCreated;
 
-			_typePopups.Add(property.managedReferenceFieldTypename, new TypePopupCache(popup, state));
+			_typePopups.Add(property.managedReferenceFieldTypename, popup);
 
 			return typePopup;
 
@@ -140,17 +139,5 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) =>
 			EditorGUI.GetPropertyHeight(property, true);
-
-		private readonly struct TypePopupCache
-		{
-			public readonly AdvancedTypePopup TypePopup;
-			public readonly AdvancedDropdownState State;
-
-			public TypePopupCache(AdvancedTypePopup typePopup, AdvancedDropdownState state)
-			{
-				TypePopup = typePopup;
-				State = state;
-			}
-		}
 	}
 }
