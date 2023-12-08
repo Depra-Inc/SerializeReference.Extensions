@@ -4,26 +4,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Depra.SerializedReference.Dropdown.Editor.Extensions;
+using Depra.Inspector.SerializedReference.Editor.Extensions;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Popup
+namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 {
 	/// <summary>
 	/// A type popup with a fuzzy finder.
 	/// </summary>
-	internal sealed class AdvancedTypePopup : AdvancedDropdown
+	internal sealed class AdvancedTypeDropdown : AdvancedDropdown
 	{
 		private const string DROPDOWN_NAME = "Select Type";
 		private static readonly float HEADER_HEIGHT = EditorGUIUtility.singleLineHeight * 2f;
 
 		private readonly Type[] _types;
 
-		public event Action<AdvancedTypePopupItem> OnItemSelected;
+		public event Action<AdvancedTypeDropdownItem> OnItemSelected;
 
-		public AdvancedTypePopup(IEnumerable<Type> types, int maxLineCount, AdvancedDropdownState state) : base(state)
+		public AdvancedTypeDropdown(IEnumerable<Type> types, int maxLineCount, AdvancedDropdownState state) : base(state)
 		{
 			_types = types.ToArray();
 			minimumSize = new Vector2(minimumSize.x, EditorGUIUtility.singleLineHeight * maxLineCount + HEADER_HEIGHT);
@@ -39,7 +39,7 @@ namespace Depra.SerializedReference.Dropdown.Editor.Popup
 
 		protected override void ItemSelected(AdvancedDropdownItem item)
 		{
-			if (item is AdvancedTypePopupItem typePopupItem)
+			if (item is AdvancedTypeDropdownItem typePopupItem)
 			{
 				OnItemSelected?.Invoke(typePopupItem);
 			}

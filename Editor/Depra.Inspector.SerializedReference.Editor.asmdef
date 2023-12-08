@@ -1,0 +1,18 @@
+{
+    "name": "Depra.Inspector.SerializedReference.Editor",
+    "rootNamespace": "Depra.Inspector.SerializedReference",
+    "references": [
+        "GUID:5c3cbf54bce652248b5d0c693909f476"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Utils
+namespace Depra.Inspector.SerializedReference.Editor.Utils
 {
 	internal static class EditorIcons
 	{

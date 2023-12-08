@@ -42,13 +42,13 @@
 
 ## 📥 Установка
 
-Скачайте любую версию из [релизов](https://github.com/Depression-aggression/SerializedReference.Dropdown/releases).
+Скачайте любую версию из [релизов](https://github.com/Depra-Inc/Inspector.SerializedReference/releases).
 
 #### Установка через URL git
 
 Также вы можете добавить этот пакет, открыв **PackageManager** и введя
 
-`https://github.com/Depression-aggression/SerializedReference.Dropdown.git`
+`https://github.com/Depra-Inc/Inspector.SerializedReference.git`
 
 в опцию `Добавить пакет из URL git`.
 
@@ -133,12 +133,12 @@ public sealed class CommandWithCustomTypeMenu : ISampleCommand
 Я являюсь независимым разработчиком,
 и большая часть разработки этого проекта выполняется в моём свободном времени.
 Если вас интересует сотрудничество или найм меня для выполнения проекта,
-пожалуйста, ознакомьтесь с [моим портфолио](https://github.com/Depression-aggression)
-и [свяжитесь со мной](mailto:g0dzZz1lla@yandex.ru)!
+пожалуйста, ознакомьтесь с [моим портфолио](https://github.com/Depra-Inc)
+и [свяжитесь со мной](mailto:n.melnikov@depra.org)!
 
 ## Лицензия
 
-**[Apache-2.0](https://github.com/Depression-aggression/SerializedReference.Dropdown/blob/main/LICENSE)**
+**[Apache-2.0](https://github.com/Depra-Inc/Inspector.SerializedReference/blob/main/LICENSE)**
 
 Авторские права (c) 2023 Николай Мельников
-[g0dzZz1lla@yandex.ru](mailto:g0dzZz1lla@yandex.ru)
+[n.melnikov@depra.org](mailto:n.melnikov@depra.org)

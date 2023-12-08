@@ -1,8 +1,8 @@
 {
-    "name": "Depra.SerializeReference.Selection.Samples",
-    "rootNamespace": "",
+    "name": "Depra.Inspector.SerializedReference.Samples",
+    "rootNamespace": "Depra.Inspector.SerializedReference",
     "references": [
-        "GUID:47f3b0f3b769b274483ca3dcb73bde9e"
+        "GUID:5c3cbf54bce652248b5d0c693909f476"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -4,15 +4,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Depra.SerializedReference.Dropdown.Runtime;
 using UnityEditor;
+using Object = UnityEngine.Object;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Extensions
+namespace Depra.Inspector.SerializedReference.Editor.Extensions
 {
 	internal static class TypeExtensions
 	{
 		private const int NULL_ORDER = -999;
-		private static readonly Type UNITY_OBJECT_TYPE = typeof(UnityEngine.Object);
+		private static readonly Type UNITY_OBJECT_TYPE = typeof(Object);
 
 		public static IEnumerable<Type> OrderByType(this IEnumerable<Type> self) =>
 			self.OrderBy(type => type == null

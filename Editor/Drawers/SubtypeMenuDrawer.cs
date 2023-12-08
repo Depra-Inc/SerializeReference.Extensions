@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using Depra.SerializedReference.Dropdown.Editor.Popup;
-using Depra.SerializedReference.Dropdown.Runtime;
-using Depra.SerializedReference.Dropdown.Editor.Extensions;
+using Depra.Inspector.SerializedReference.Editor.Dropdown;
+using Depra.Inspector.SerializedReference.Editor.Extensions;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Drawers
+namespace Depra.Inspector.SerializedReference.Editor.Drawers
 {
 	[CustomPropertyDrawer(typeof(SubtypeMenuAttribute))]
 	internal sealed class SubtypeMenuDrawer : PropertyDrawer
@@ -22,7 +21,7 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 			new("The property type is not manage reference.");
 
 		private readonly Dictionary<string, GUIContent> _typeNameCaches = new();
-		private readonly Dictionary<string, AdvancedTypePopup> _typePopups = new();
+		private readonly Dictionary<string, AdvancedTypeDropdown> _typePopups = new();
 
 		private SerializedProperty _targetProperty;
 
@@ -68,7 +67,7 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 			EditorGUI.PropertyField(position, property, label, true);
 		}
 
-		private AdvancedTypePopup GetTypePopup(SerializedProperty property)
+		private AdvancedTypeDropdown GetTypePopup(SerializedProperty property)
 		{
 			if (_typePopups.TryGetValue(property.managedReferenceFieldTypename, out var typePopup))
 			{
@@ -77,7 +76,7 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 
 			var baseType = property.GetManagedReferenceFieldType();
 			var types = baseType.GetDerivedTypes();
-			var popup = new AdvancedTypePopup(types, MAX_TYPE_POPUP_LINE_COUNT, new AdvancedDropdownState());
+			var popup = new AdvancedTypeDropdown(types, MAX_TYPE_POPUP_LINE_COUNT, new AdvancedDropdownState());
 
 			popup.OnItemSelected += OnItemCreated;
 
@@ -85,7 +84,7 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 
 			return typePopup;
 
-			void OnItemCreated(AdvancedTypePopupItem item)
+			void OnItemCreated(AdvancedTypeDropdownItem item)
 			{
 				var managedReference = _targetProperty.SetManagedReference(item.Type);
 				_targetProperty.isExpanded = managedReference != null;

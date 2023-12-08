@@ -1,6 +1,6 @@
 {
-	"name": "Depra.SerializedReference.Dropdown.Runtime",
-	"rootNamespace": "Depra.SerializedReference.Dropdown.Runtime",
+	"name": "Depra.Inspector.SerializedReference",
+	"rootNamespace": "Depra.Inspector.SerializedReference",
 	"references": [],
 	"includePlatforms": [],
 	"excludePlatforms": [],

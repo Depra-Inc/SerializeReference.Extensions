@@ -3,10 +3,10 @@
 
 using System;
 using System.Reflection;
-using Depra.SerializedReference.Dropdown.Editor.Exceptions;
+using Depra.Inspector.SerializedReference.Editor.Exceptions;
 using UnityEditor;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Extensions
+namespace Depra.Inspector.SerializedReference.Editor.Extensions
 {
 	internal static class SerializePropertyExtensions
 	{

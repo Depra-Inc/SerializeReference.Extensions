@@ -2,17 +2,17 @@
 // © 2023 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
-using Depra.SerializedReference.Dropdown.Editor.Utils;
+using Depra.Inspector.SerializedReference.Editor.Utils;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Editor.Popup
+namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 {
-	internal sealed class AdvancedTypePopupItem : AdvancedDropdownItem
+	internal sealed class AdvancedTypeDropdownItem : AdvancedDropdownItem
 	{
 		public readonly Type Type;
 
-		public AdvancedTypePopupItem(Type type, string name) : base(name)
+		public AdvancedTypeDropdownItem(Type type, string name) : base(name)
 		{
 			Type = type;
 

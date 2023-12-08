@@ -1,11 +1,10 @@
-// Copyright © 2023 Nikolay Melnikov. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
+// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
-using Depra.SerializedReference.Dropdown.Runtime;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Samples
+namespace Depra.Inspector.SerializedReference.Samples
 {
 	internal sealed class SerializeReferenceSelectionSamples : MonoBehaviour
 	{

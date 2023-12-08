@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Depra.SerializedReference.Dropdown.Runtime
+namespace Depra.Inspector.SerializedReference
 {
 	/// <summary>
 	/// An attribute that overrides the type name and category displayed in the <see cref="SubtypeMenuAttribute"/> popup.

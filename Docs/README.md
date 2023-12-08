@@ -42,13 +42,13 @@ are serialized by `SerializeReference` attribute.
 
 ## 📥 Installation
 
-Download any version from [releases](https://github.com/Depression-aggression/SerializedReference.Dropdown/releases).
+Download any version from [releases](https://github.com/Depra-Inc/Inspector.SerializedReference/releases).
 
 #### Install via git URL
 
 Alternatively, you can add this package by opening the **PackageManager** and entering
 
-`https://github.com/Depression-aggression/SerializedReference.Dropdown.git`
+`https://github.com/Depra-Inc/Inspector.SerializedReference.git`
 
 from the `Add package from git URL` option.
 
@@ -124,19 +124,19 @@ will be helpful.
 
 ## 🤝 Contribute
 
-I welcome feature requests and bug reports in [issues](https://github.com/Depression-aggression/SerializedReference.Dropdown/issues)
-and [pull requests](https://github.com/Depression-aggression/SerializedReference.Dropdown/pulls).
+I welcome feature requests and bug reports in [issues](https://github.com/Depra-Inc/Inspector.SerializedReference/issues)
+and [pull requests](https://github.com/Depra-Inc/Inspector.SerializedReference/pulls).
 
 ## Support
 
 I am an independent developer,
 and most of the development on this project is done in my spare time.
 If you're interested in collaboration or hiring me for a project,
-please check out [my portfolio](https://github.com/Depression-aggression) and [reach out](mailto:g0dzZz1lla@yandex.ru)!
+please check out [my portfolio](https://github.com/Depra-Inc) and [reach out](mailto:n.melnikov@depra.org)!
 
 ## License
 
-**[Apache-2.0](https://github.com/Depression-aggression/SerializedReference.Dropdown/blob/main/LICENSE)**
+**[Apache-2.0](https://github.com/Depra-Inc/Inspector.SerializedReference/blob/main/LICENSE)**
 
 Copyright (c) 2023 Nikolay Melnikov
-[g0dzZz1lla@yandex.ru](mailto:g0dzZz1lla@yandex.ru)
+[n.melnikov@depra.org](mailto:n.melnikov@depra.org)

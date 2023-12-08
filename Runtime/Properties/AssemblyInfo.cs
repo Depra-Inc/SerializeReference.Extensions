@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Depra.SerializedReference.Dropdown.Editor")]
+[assembly: InternalsVisibleTo("Depra.Inspector.SerializedReference.Editor")]

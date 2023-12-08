@@ -4,7 +4,7 @@
 using System;
 using UnityEngine;
 
-namespace Depra.SerializedReference.Dropdown.Runtime
+namespace Depra.Inspector.SerializedReference
 {
 	/// <summary>
 	/// Attribute to specify the type of the field serialized by the <see cref="SerializeReference"/> attribute in the inspector.
