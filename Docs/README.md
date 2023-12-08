@@ -1,6 +1,6 @@
-﻿# Depra.SerializedReference.Dropdown
+﻿# Depra.Inspector.SerializedReference
 
-<div align="center">
+<div>
     <strong><a href="README.md">English</a> | <a href="README.RU.md">Русский</a></strong>
 </div>
 

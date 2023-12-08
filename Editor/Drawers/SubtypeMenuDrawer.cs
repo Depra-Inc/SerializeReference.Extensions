@@ -1,5 +1,5 @@
-﻿// Copyright © 2023 Nikolay Melnikov. All rights reserved.
-// SPDX-License-Identifier: Apache-2.0
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,9 @@ namespace Depra.SerializedReference.Dropdown.Editor.Drawers
 	{
 		private const int MAX_TYPE_POPUP_LINE_COUNT = 13;
 		private static readonly GUIContent NULL_DISPLAY_NAME = new(SubtypeMenuAliasAttribute.NULL_DISPLAY_NAME);
-		private static readonly GUIContent IS_NOT_MANAGED_REFERENCE_LABEL = new("The property type is not manage reference.");
+
+		private static readonly GUIContent IS_NOT_MANAGED_REFERENCE_LABEL =
+			new("The property type is not manage reference.");
 
 		private readonly Dictionary<string, GUIContent> _typeNameCaches = new();
 		private readonly Dictionary<string, AdvancedTypePopup> _typePopups = new();
