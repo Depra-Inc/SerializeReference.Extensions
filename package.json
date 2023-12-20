@@ -1,6 +1,6 @@
 {
 	"name": "com.depra.inspector.unity.serialized-reference",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"displayName": "Depra.Inspector.SerializedReference",
 	"description": "Provide popup to specify the type of the field serialized by the [SerializeReference] attribute in the inspector.",
 	"unity": "2021.3",

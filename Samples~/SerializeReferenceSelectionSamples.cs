@@ -8,8 +8,8 @@ namespace Depra.Inspector.SerializedReference.Samples
 {
 	internal sealed class SerializeReferenceSelectionSamples : MonoBehaviour
 	{
-		[SubtypeMenu] [SerializeReference] private ISampleCommand _command;
-		[SubtypeMenu] [SerializeReference] private ISampleCommand[] _commands;
+		[SubtypeDropdown] [SerializeReference] private ISampleCommand _command;
+		[SubtypeDropdown] [SerializeReference] private ISampleCommand[] _commands;
 
 		private void Start()
 		{
@@ -32,26 +32,23 @@ namespace Depra.Inspector.SerializedReference.Samples
 		void Execute();
 	}
 
-	[Serializable]
 	public sealed class ClassCommand : ISampleCommand
 	{
 		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(ClassCommand)}");
 	}
 
-	[Serializable]
-	[SubtypeMenuAlias(nameof(CommandWithCustomTypeMenu))]
+	[SubtypeAlias(nameof(Samples))]
 	public sealed class CommandWithCustomTypeMenu : ISampleCommand
 	{
-		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(CommandWithCustomTypeMenu)}");
+		void ISampleCommand.Execute() =>
+			Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(CommandWithCustomTypeMenu)}");
 	}
 
-	[Serializable]
 	public readonly struct StructCommand : ISampleCommand
 	{
 		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(StructCommand)}");
 	}
 
-	[Serializable]
 	public sealed record RecordCommand : ISampleCommand
 	{
 		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(RecordCommand)}");

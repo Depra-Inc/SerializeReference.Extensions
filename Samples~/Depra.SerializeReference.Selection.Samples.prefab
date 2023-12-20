@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5996749831859146152}
-  - component: {fileID: 7341436316164302174}
+  - component: {fileID: 5385033686983520438}
   m_Layer: 0
   m_Name: Depra.SerializeReference.Selection.Samples
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7341436316164302174
+--- !u!114 &5385033686983520438
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,32 +41,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 6348677824085844613}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 884d3b2c3a641c84e94ad2b9c10a67e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d8a4d6fb7b8275438507fdd1881299c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _command:
-    rid: 5583643708317499393
+    rid: 334371603010027521
   _commands:
-  - rid: 5583643708317499394
-  - rid: 5583643708317499395
-  - rid: 5583643708317499396
-  - rid: 5583643708317499398
+  - rid: 334371603010027522
+  - rid: 334371603010027523
+  - rid: 334371603010027525
   references:
     version: 2
     RefIds:
-    - rid: 5583643708317499393
-      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+    - rid: 334371603010027521
+      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
       data: 
-    - rid: 5583643708317499394
-      type: {class: StructCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+    - rid: 334371603010027522
+      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
       data: 
-    - rid: 5583643708317499395
-      type: {class: ClassCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
-      data:
-        _message: 
-    - rid: 5583643708317499396
-      type: {class: RecordCommand, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+    - rid: 334371603010027523
+      type: {class: CommandWithCustomTypeMenu, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
       data: 
-    - rid: 5583643708317499398
-      type: {class: CommandWithCustomTypeMenu, ns: Depra.SerializeReference.Selection.Samples, asm: Depra.SerializeReference.Selection.Samples}
+    - rid: 334371603010027525
+      type: {class: CommandWithCustomTypeMenu, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
       data: 

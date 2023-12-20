@@ -10,5 +10,5 @@ namespace Depra.Inspector.SerializedReference
 	/// Attribute to specify the type of the field serialized by the <see cref="SerializeReference"/> attribute in the inspector.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
-	public sealed class SubtypeMenuAttribute : PropertyAttribute { }
+	public sealed class SubtypeDropdownAttribute : PropertyAttribute { }
 }
