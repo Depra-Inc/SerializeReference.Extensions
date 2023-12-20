@@ -31,7 +31,7 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 		{
 			var itemCount = 1;
 			var root = new AdvancedDropdownItem(DROPDOWN_NAME);
-			NullAdvancedDropdownItem.AddAsChild(root, itemCount);
+			root.AddChild(new NullAdvancedDropdownItem { id = itemCount++ });
 
 			foreach (var type in OrderAttribute.OrderBy(_types))
 			{
@@ -58,11 +58,12 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 			}
 		}
 
-		private static void AddTypeToHierarchy(AdvancedDropdownItem self, Type type, string[] typeNames,
+		private static void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] typeNames,
 			ref int itemCount)
 		{
-			var parent = self;
-			foreach (var namespaceName in typeNames)
+			var parent = root;
+			var parentTypeNames = typeNames[..^1];
+			foreach (var namespaceName in parentTypeNames)
 			{
 				parent = FindOrCreateChildItem(parent, namespaceName, ref itemCount);
 			}
@@ -72,10 +73,10 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 			parent.AddChild(item);
 		}
 
-		private static AdvancedDropdownItem FindOrCreateChildItem(AdvancedDropdownItem self, string itemName,
+		private static AdvancedDropdownItem FindOrCreateChildItem(AdvancedDropdownItem item, string itemName,
 			ref int itemCount)
 		{
-			foreach (var child in self.children)
+			foreach (var child in item.children)
 			{
 				if (child.name == itemName)
 				{
@@ -84,7 +85,7 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 			}
 
 			var newItem = new AdvancedDropdownItem(itemName) { id = itemCount++, };
-			self.AddChild(newItem);
+			item.AddChild(newItem);
 
 			return newItem;
 		}

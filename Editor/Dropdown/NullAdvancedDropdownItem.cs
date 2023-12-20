@@ -9,9 +9,6 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 	{
 		public const string DISPLAY_NAME = "<null>";
 
-		public static void AddAsChild(AdvancedDropdownItem dropdown, int itemId) =>
-			dropdown.AddChild(new AdvancedTypeDropdownItem(null, DISPLAY_NAME) { id = itemId });
-
-		public NullAdvancedDropdownItem(string name) : base(name) { }
+		public NullAdvancedDropdownItem() : base(DISPLAY_NAME) { }
 	}
 }
