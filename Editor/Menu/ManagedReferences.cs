@@ -2,9 +2,9 @@
 using System.Text;
 using UnityEditor;
 using UnityEngine;
-using static Depra.Inspector.SerializedReference.Editor.Menu.Module;
+using static Depra.SerializeReference.Extensions.Editor.Menu.Module;
 
-namespace Depra.Inspector.SerializedReference.Editor.Menu
+namespace Depra.SerializeReference.Extensions.Editor.Menu
 {
 	internal static class ManagedReferences
 	{

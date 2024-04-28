@@ -1,43 +1,42 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
+using Depra.SerializeReference.Extensions.Editor.Menu;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
-namespace Depra.Inspector.SerializedReference.Editor.Dropdown
+namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
 	/// <summary>
 	/// A type popup with a fuzzy finder.
 	/// </summary>
 	internal sealed class AdvancedTypeDropdown : AdvancedDropdown
 	{
-		private const string DROPDOWN_NAME = "Select Type";
-		private static readonly float HEADER_HEIGHT = EditorGUIUtility.singleLineHeight * 2f;
-
 		private readonly IEnumerable<Type> _types;
 
-		public event Action<AdvancedTypeDropdownItem> OnItemSelected;
+		public event Action<AdvancedDropdownItem> OnItemSelected;
 
 		public AdvancedTypeDropdown(IEnumerable<Type> types, int maxLineCount, AdvancedDropdownState state) : base(state)
 		{
 			_types = types;
-			minimumSize = new Vector2(minimumSize.x, EditorGUIUtility.singleLineHeight * maxLineCount + HEADER_HEIGHT);
+			var headerHeight = EditorGUIUtility.singleLineHeight * 2f;
+			minimumSize = new Vector2(minimumSize.x, EditorGUIUtility.singleLineHeight * maxLineCount + headerHeight);
 		}
 
 		protected override AdvancedDropdownItem BuildRoot()
 		{
 			var itemCount = 1;
-			var root = new AdvancedDropdownItem(DROPDOWN_NAME);
-			root.AddChild(new NullAdvancedDropdownItem { id = itemCount++ });
+			var root = new AdvancedDropdownItem("Select Type");
+			root.AddChild(new NullDropdownItem { id = itemCount++ });
 
-			foreach (var type in OrderAttribute.OrderBy(_types))
+			foreach (var type in SerializeReferenceOrderAttribute.OrderBy(_types))
 			{
-				var splitPath = type.TryGetCustomAttribute(out SubtypeAliasAttribute subtypeAlias)
-					? subtypeAlias.Alias.SplitDropdownName(Separators.ALL)
-					: type.FullName.SplitDropdownName(Separators.ALL);
+				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathAttr)
+					? MenuPath.SplitName(menuPathAttr.Path, Separators.ALL)
+					: MenuPath.SplitName(type.FullName, Separators.ALL);
 
 				if (type.IsNested)
 				{
@@ -50,44 +49,36 @@ namespace Depra.Inspector.SerializedReference.Editor.Dropdown
 			return root;
 		}
 
-		protected override void ItemSelected(AdvancedDropdownItem item)
-		{
-			if (item is AdvancedTypeDropdownItem dropdownItem)
-			{
-				OnItemSelected?.Invoke(dropdownItem);
-			}
-		}
+		protected override void ItemSelected(AdvancedDropdownItem item) => OnItemSelected?.Invoke(item);
 
-		private static void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] typeNames,
-			ref int itemCount)
+		private void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] names, ref int count)
 		{
 			var parent = root;
-			var parentTypeNames = typeNames[..^1];
+			var parentTypeNames = names[..^1];
 			foreach (var namespaceName in parentTypeNames)
 			{
-				parent = FindOrCreateChildItem(parent, namespaceName, ref itemCount);
+				parent = FindOrCreateChild(parent, namespaceName, ref count);
 			}
 
-			var typeName = ObjectNames.NicifyVariableName(typeNames[^1]);
-			var item = new AdvancedTypeDropdownItem(type, typeName) { id = itemCount++ };
+			var typeName = ObjectNames.NicifyVariableName(names[^1]);
+			var item = new TypeDropdownItem(type, typeName) { id = count++ };
 			parent.AddChild(item);
 		}
 
-		private static AdvancedDropdownItem FindOrCreateChildItem(AdvancedDropdownItem item, string itemName,
-			ref int itemCount)
+		private AdvancedDropdownItem FindOrCreateChild(AdvancedDropdownItem parent, string name, ref int count)
 		{
-			foreach (var child in item.children)
+			foreach (var child in parent.children)
 			{
-				if (child.name == itemName)
+				if (child.name == name)
 				{
 					return child;
 				}
 			}
 
-			var newItem = new AdvancedDropdownItem(itemName) { id = itemCount++, };
-			item.AddChild(newItem);
+			var item = new AdvancedDropdownItem(name) { id = count++, };
+			parent.AddChild(item);
 
-			return newItem;
+			return item;
 		}
 	}
 }

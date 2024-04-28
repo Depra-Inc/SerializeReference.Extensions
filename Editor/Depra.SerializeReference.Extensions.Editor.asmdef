@@ -1,8 +1,8 @@
 {
-    "name": "Depra.Inspector.SerializedReference.Editor",
-    "rootNamespace": "Depra.Inspector.SerializedReference",
+    "name": "Depra.SerializeReference.Extensions.Editor",
+    "rootNamespace": "Depra.SerializeReference.Extensions",
     "references": [
-        "GUID:5c3cbf54bce652248b5d0c693909f476"
+        "GUID:d4770dd4eaf4dc9469ce95e304152de6"
     ],
     "includePlatforms": [
         "Editor"

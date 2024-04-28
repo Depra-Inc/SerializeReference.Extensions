@@ -1,24 +1,25 @@
 {
-	"name": "com.depra.inspector.unity.serialized-reference",
-	"version": "0.0.6",
-	"displayName": "Depra.Inspector.SerializedReference",
+	"name": "com.depra.serialize-reference.extensions",
+	"version": "0.0.7",
+	"displayName": "Depra.SerializeReference.Extensions",
 	"description": "Provide popup to specify the type of the field serialized by the [SerializeReference] attribute in the inspector.",
 	"unity": "2021.3",
 	"license": "Apache-2.0",
 	"keywords": [
-		"depra",
+		"unity",
+		"serialize",
 		"reference",
-		"serialized",
-		"attributes"
+		"attributes",
+		"extensions"
 	],
 	"author": {
 		"name": "Depra, Inc.",
 		"email": "n.melnikov@depra.org",
-		"url": "https://github.com/Depression-aggression"
+		"url": "https://github.com/Depra-Inc"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Depra-Inc/Inspector.SerializedReference.git"
+		"url": "https://github.com/Depra-Inc/SerializeReference.Extensions.git"
 	},
 	"samples": [
 		{

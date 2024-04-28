@@ -1,10 +1,11 @@
-﻿namespace Depra.Inspector.SerializedReference.Editor.Menu
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+
+namespace Depra.SerializeReference.Extensions.Editor.Menu
 {
 	internal static class Module
 	{
-		public const string MENU_PATH = nameof(Inspector) + SLASH +
-		                                nameof(SerializedReference) + SLASH;
-
-		private const string SLASH = "/";
+		public const string MENU_PATH = nameof(SerializeReference) + SLASH + nameof(Extensions) + SLASH;
+		internal const string SLASH = "/";
 	}
 }

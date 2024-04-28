@@ -1,6 +1,6 @@
 {
-	"name": "Depra.Inspector.SerializedReference",
-	"rootNamespace": "Depra.Inspector.SerializedReference",
+	"name": "Depra.SerializeReference.Extensions",
+	"rootNamespace": "Depra.SerializeReference.Extensions",
 	"references": [],
 	"includePlatforms": [],
 	"excludePlatforms": [],
