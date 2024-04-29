@@ -125,7 +125,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 			var typeName = splitTypeName[^1];
 			typeName = ObjectNames.NicifyVariableName(typeName);
-			var content = new GUIContent(typeName, (Texture2D) EditorIcons.DROPDOWN_ICON.image);
+			var contentIcon = ScriptImporter.GetIcon(type, EditorIcons.DROPDOWN_ICON.image);
+			var content = new GUIContent(typeName, contentIcon);
 			_typeNameCache.Add(fullTypename, content);
 
 			return content;

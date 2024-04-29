@@ -11,7 +11,11 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 	{
 		private static readonly Texture2D DEFAULT_ICON = (Texture2D) EditorIcons.SCRIPT_ICON.image;
 
-		public static Texture2D GetIcon(Type type)
+		public static Texture2D GetIcon(Type type) => GetIcon(type, DEFAULT_ICON);
+
+		public static Texture2D GetIcon(Type type, Texture @default) => GetIcon(type, (Texture2D) @default);
+
+		public static Texture2D GetIcon(Type type, Texture2D @default)
 		{
 			const string SEARCH_PATTERN = "{0} t:script";
 			var guids = AssetDatabase.FindAssets(string.Format(SEARCH_PATTERN, type.Name));
@@ -19,13 +23,15 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 			{
 				var path = AssetDatabase.GUIDToAssetPath(guid);
 				var importer = AssetImporter.GetAtPath(path);
-				if (importer is MonoImporter monoImporter)
+				if (importer is not MonoImporter monoImporter)
 				{
-					return monoImporter.GetIcon() ?? DEFAULT_ICON;
+					continue;
 				}
+
+				return monoImporter.GetIcon() ?? @default;
 			}
 
-			return DEFAULT_ICON;
+			return @default;
 		}
 	}
 }
