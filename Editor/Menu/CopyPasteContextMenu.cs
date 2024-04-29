@@ -3,7 +3,7 @@ using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using UnityEditor;
 using UnityEngine;
 
-namespace Depra.Inspector.SerializedReference.Editor.Menu
+namespace Depra.SerializeReference.Extensions.Editor.Menu
 {
 	[InitializeOnLoad]
 	internal sealed class CopyPasteContextMenu
@@ -26,15 +26,14 @@ namespace Depra.Inspector.SerializedReference.Editor.Menu
 			var copyContent = new GUIContent(ObjectNames.NicifyVariableName(nameof(CopySerializeReference)));
 			menu.AddItem(copyContent, false, _ => { CopySerializeReference(copyProperty); }, null);
 			var pasteContent = new GUIContent(ObjectNames.NicifyVariableName(nameof(PasteSerializeReference)));
-			menu.AddItem(pasteContent, false, (_) => PasteSerializeReference(copyProperty), null);
+			menu.AddItem(pasteContent, false, _ => PasteSerializeReference(copyProperty), null);
 			if (property.IsArrayElement() == false)
 			{
 				return;
 			}
 
 			var duplicateTitle = ObjectNames.NicifyVariableName(nameof(DuplicateSerializeReferenceArrayElement));
-			menu.AddItem(new GUIContent(duplicateTitle), false,
-				_ => DuplicateSerializeReferenceArrayElement(copyProperty), null);
+			menu.AddItem(new GUIContent(duplicateTitle), false, _ => DuplicateSerializeReferenceArrayElement(copyProperty), null);
 		}
 
 		private static void CopySerializeReference(SerializedProperty property)

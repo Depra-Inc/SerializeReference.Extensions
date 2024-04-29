@@ -45,23 +45,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _command:
-    rid: 334371603010027521
+    rid: 4748586883760259072
   _commands:
-  - rid: 334371603010027522
-  - rid: 334371603010027523
-  - rid: 334371603010027525
+  - rid: 4748586883760259075
+  - rid: 4748586883760259076
+  - rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 334371603010027521
-      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 4748586883760259072
+      type: {class: CommandWithCustomTypeMenu, ns: Depra.SerializeReference.Extensions.Samples, asm: Depra.SerializeReference.Extensions.Samples}
       data: 
-    - rid: 334371603010027522
-      type: {class: SerializeReferenceSelectionSamples/NestedCommand, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
+    - rid: 4748586883760259075
+      type: {class: RecordCommand, ns: Depra.SerializeReference.Extensions.Samples, asm: Depra.SerializeReference.Extensions.Samples}
       data: 
-    - rid: 334371603010027523
-      type: {class: CommandWithCustomTypeMenu, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
-      data: 
-    - rid: 334371603010027525
-      type: {class: CommandWithCustomTypeMenu, ns: Depra.Inspector.SerializedReference.Samples, asm: Depra.Inspector.SerializedReference.Samples}
+    - rid: 4748586883760259076
+      type: {class: CommandWithCustomTypeMenu, ns: Depra.SerializeReference.Extensions.Samples, asm: Depra.SerializeReference.Extensions.Samples}
       data: 

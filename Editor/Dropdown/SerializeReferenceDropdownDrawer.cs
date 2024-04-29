@@ -106,7 +106,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			var fullTypename = property.managedReferenceFullTypename;
 			if (string.IsNullOrEmpty(fullTypename))
 			{
-				return new GUIContent(NullDropdownItem.DISPLAY_NAME);
+				return new GUIContent(NullDropdownItem.DISPLAY_NAME, EditorIcons.NULL_ICON.image);
 			}
 
 			if (_typeNameCache.TryGetValue(fullTypename, out var cachedTypename))

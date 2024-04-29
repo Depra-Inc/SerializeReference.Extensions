@@ -1,15 +1,20 @@
 // SPDX-License-Identifier: Apache-2.0
-// © 2023 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
 using UnityEngine;
 
-namespace Depra.Inspector.SerializedReference.Samples
+namespace Depra.SerializeReference.Extensions.Samples
 {
 	internal sealed class SerializeReferenceSelectionSamples : MonoBehaviour
 	{
-		[SubtypeDropdown] [SerializeReference] private ISampleCommand _command;
-		[SubtypeDropdown] [SerializeReference] private ISampleCommand[] _commands;
+		[SerializeReferenceDropdown]
+		[UnityEngine.SerializeReference]
+		private ISampleCommand _command;
+
+		[SerializeReferenceDropdown]
+		[UnityEngine.SerializeReference]
+		private ISampleCommand[] _commands;
 
 		private void Start()
 		{
@@ -37,7 +42,7 @@ namespace Depra.Inspector.SerializedReference.Samples
 		void ISampleCommand.Execute() => Debug.Log($"{nameof(ISampleCommand.Execute)} {nameof(ClassCommand)}");
 	}
 
-	[SubtypeAlias(nameof(Samples))]
+	[SerializeReferenceMenuPath(nameof(Samples))]
 	public sealed class CommandWithCustomTypeMenu : ISampleCommand
 	{
 		void ISampleCommand.Execute() =>

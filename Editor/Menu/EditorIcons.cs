@@ -8,7 +8,9 @@ namespace Depra.SerializeReference.Extensions.Editor.Menu
 {
 	internal static class EditorIcons
 	{
-		public static readonly GUIContent SCRIPT_ICON = EditorGUIUtility.IconContent("cs script icon");
-		public static readonly GUIContent DROPDOWN_ICON = EditorGUIUtility.IconContent("d_Dropdown Icon");
+		public static readonly GUIContent NULL_ICON = EditorGUIUtility.IconContent("Warning@2x");
+		public static readonly GUIContent SCRIPT_ICON = EditorGUIUtility.IconContent("cs Script Icon");
+		public static readonly GUIContent MISSING_ICON = EditorGUIUtility.IconContent("Error@2x");
+		public static readonly GUIContent DROPDOWN_ICON = EditorGUIUtility.IconContent("d_Linked");
 	}
 }

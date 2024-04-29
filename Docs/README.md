@@ -1,4 +1,4 @@
-﻿# Depra.Inspector.SerializedReference
+﻿# SerializeReference.Extensions
 
 <div>
     <strong><a href="README.md">English</a> | <a href="README.RU.md">Русский</a></strong>
@@ -11,7 +11,7 @@
 - [Features](#-features)
 - [Installation](#-installation)
 - [FAQ](#-faq)
-- [Contribute](#contribute)
+- [Contribute](#-contribute)
 - [Support](#support)
 - [License](#license)
 
@@ -22,7 +22,7 @@
 The `SerializeReference` attribute, added in **Unity 2019.3**,
 makes it possible to serialize references to interfaces and abstract classes.
 
-The `SubtypeMenu` attribute allows you to easily set
+The `SerializeReferenceDropdown` attribute allows you to easily set
 subclasses of those abstract classes in the **Editor** that
 are serialized by `SerializeReference` attribute.
 
@@ -32,23 +32,23 @@ are serialized by `SerializeReference` attribute.
 
 - Easily set subclass by popup.
 - Type finding through fuzzy searching.
-- The `SubtypeMenu` attribute supports types that meet the following conditions:
+- The `SerializeReferenceDropdown` attribute supports types that meet the following conditions:
     - ✅ Public
     - ✅ Not abstract
     - ✅ Not generic
     - ✅ Not a Unity object
     - ✅ Serializable attribute is applied.
-- Override the type name, path and order by the `SubtypeMenuAlias` attribute.
+- Override the type name, path and order by the `SerializeReferenceMenuPath` attribute.
 
 ## 📥 Installation
 
-Download any version from [releases](https://github.com/Depra-Inc/Inspector.SerializedReference/releases).
+Download any version from [releases](https://github.com/Depra-Inc/SerializeReference.Extensions/releases).
 
 #### Install via git URL
 
 Alternatively, you can add this package by opening the **PackageManager** and entering
 
-`https://github.com/Depra-Inc/Inspector.SerializedReference.git`
+`https://github.com/Depra-Inc/SerializeReference.Extensions.git`
 
 from the `Add package from git URL` option.
 
@@ -66,8 +66,8 @@ internal interface ISampleCommand
 2. Define a serialized reference or an array of them:
 
 ```cs
-[SubtypeMenu] [SerializeReference] private ISampleCommand _command;
-[SubtypeMenu] [SerializeReference] private ISampleCommand[] _commands;
+[SerializeReferenceDropdown] [SerializeReference] private ISampleCommand _command;
+[SerializeReferenceDropdown] [SerializeReference] private ISampleCommand[] _commands;
 ```
 
 3. Implement public class or struct od record. They can be nested.
@@ -92,11 +92,11 @@ public sealed record RecordCommand : ISampleCommand
 }
 ```
 
-4. Add `SubtypeMenuAlias` attribute to override the type name, path, and order:
+4. Add `SerializeReferenceMenuPath` attribute to override the type name, path, and order:
 
 ```cs
 [Serializable]
-[SubtypeMenuAlias(nameof(CommandWithCustomTypeMenu))]
+[SerializeReferenceMenuPath(nameof(CommandWithCustomTypeMenu))]
 public sealed class CommandWithCustomTypeMenu : ISampleCommand
 {
     void ISampleCommand.Execute() => { }
@@ -124,8 +124,8 @@ will be helpful.
 
 ## 🤝 Contribute
 
-I welcome feature requests and bug reports in [issues](https://github.com/Depra-Inc/Inspector.SerializedReference/issues)
-and [pull requests](https://github.com/Depra-Inc/Inspector.SerializedReference/pulls).
+I welcome feature requests and bug reports in [issues](https://github.com/Depra-Inc/SerializeReference.Extensions/issues)
+and [pull requests](https://github.com/Depra-Inc/SerializeReference.Extensions/pulls).
 
 ## Support
 
@@ -136,7 +136,7 @@ please check out [my portfolio](https://github.com/Depra-Inc) and [reach out](ma
 
 ## License
 
-**[Apache-2.0](https://github.com/Depra-Inc/Inspector.SerializedReference/blob/main/LICENSE)**
+**[Apache-2.0](https://github.com/Depra-Inc/SerializeReference.Extensions/blob/main/LICENSE)**
 
-Copyright (c) 2023 Nikolay Melnikov
+Copyright (c) 2023-2024 Nikolay Melnikov
 [n.melnikov@depra.org](mailto:n.melnikov@depra.org)

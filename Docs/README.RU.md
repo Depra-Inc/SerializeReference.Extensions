@@ -1,4 +1,4 @@
-﻿# Depra.Inspector.SerializedReference
+﻿# SerializeReference.Extensions
 
 <div>
     <strong><a href="README.md">English</a> | <a href="README.RU.md">Русский</a></strong>
@@ -22,7 +22,7 @@
 Атрибут `SerializeReference`, добавленный в **Unity 2019.3**,
 позволяет сериализовать ссылки на интерфейсы и абстрактные классы.
 
-Атрибут `SubtypeMenu` позволяет легко задавать подклассы
+Атрибут `SerializeReferenceDropdown` позволяет легко задавать подклассы
 этих абстрактных классов в **Редакторе**, которые
 сериализуются атрибутом `SerializeReference`.
 
@@ -32,23 +32,23 @@
 
 - Легко задавать подкласс с помощью выпадающего списка.
 - Поиск типа с помощью нечеткого поиска.
-- Атрибут `SubtypeMenu` поддерживает типы, которые соответствуют следующим условиям:
+- Атрибут `SerializeReferenceDropdown` поддерживает типы, которые соответствуют следующим условиям:
     - ✅ Публичные
     - ✅ Не абстрактные
     - ✅ Не обобщенные
     - ✅ Не являются объектами Unity
     - ✅ Применен атрибут Serializable.
-- Переопределение имени, пути и порядка с помощью атрибута `SubtypeMenuAlias`.
+- Переопределение имени, пути и порядка с помощью атрибута `SerializeReferenceMenuPath`.
 
 ## 📥 Установка
 
-Скачайте любую версию из [релизов](https://github.com/Depra-Inc/Inspector.SerializedReference/releases).
+Скачайте любую версию из [релизов](https://github.com/Depra-Inc/SerializeReference.Extensions/releases).
 
 #### Установка через URL git
 
 Также вы можете добавить этот пакет, открыв **PackageManager** и введя
 
-`https://github.com/Depra-Inc/Inspector.SerializedReference.git`
+`https://github.com/Depra-Inc/SerializeReference.Extensions.git`
 
 в опцию `Добавить пакет из URL git`.
 
@@ -66,8 +66,8 @@ internal interface ISampleCommand
 2. Определите сериализованную ссылку или массив из них:
 
 ```cs
-[SubtypeMenu] [SerializeReference] private ISampleCommand _command;
-[SubtypeMenu] [SerializeReference] private ISampleCommand[] _commands;
+[SerializeReferenceDropdown] [SerializeReference] private ISampleCommand _command;
+[SerializeReferenceDropdown] [SerializeReference] private ISampleCommand[] _commands;
 ```
 
 3. Реализуйте публичный класс, структуру или запись. Они могут быть вложенными.
@@ -96,7 +96,7 @@ public sealed record RecordCommand : ISampleCommand
 
 ```cs
 [Serializable]
-[SubtypeMenuAlias(nameof(CommandWithCustomTypeMenu))]
+[SerializeReferenceMenuPath(nameof(CommandWithCustomTypeMenu))]
 public sealed class CommandWithCustomTypeMenu : ISampleCommand
 {
     void ISampleCommand.Execute() => { }
@@ -125,8 +125,8 @@ public sealed class CommandWithCustomTypeMenu : ISampleCommand
 ## 🤝 Сотрудничество
 
 Я рад приветствовать запросы на добавление новых функций и сообщения об ошибках в
-разделе [issues](https://github.com/Depression-aggression/SerializedReference.Dropdown/issues) и также
-принимать [pull requests](https://github.com/Depression-aggression/SerializedReference.Dropdown/pulls).
+разделе [issues](https://github.com/Depra-Inc/SerializeReference.Extensions/issues) и также
+принимать [pull requests](https://github.com/Depra-Inc/SerializeReference.Extensions/pulls).
 
 ## Поддержка
 
@@ -138,7 +138,7 @@ public sealed class CommandWithCustomTypeMenu : ISampleCommand
 
 ## Лицензия
 
-**[Apache-2.0](https://github.com/Depra-Inc/Inspector.SerializedReference/blob/main/LICENSE)**
+**[Apache-2.0](https://github.com/Depra-Inc/SerializeReference.Extensions/blob/main/LICENSE)**
 
-Авторские права (c) 2023 Николай Мельников
+Авторские права (c) 2023-2024 Николай Мельников
 [n.melnikov@depra.org](mailto:n.melnikov@depra.org)
