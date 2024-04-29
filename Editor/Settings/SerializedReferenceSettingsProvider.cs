@@ -2,14 +2,15 @@
 // © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using UnityEditor;
-using static Depra.SerializeReference.Extensions.Editor.Internal.Module;
 
-namespace Depra.SerializeReference.Extensions.Editor.Editors
+namespace Depra.SerializeReference.Extensions.Editor.Settings
 {
 	public sealed class SerializedReferenceSettingsProvider : SettingsProvider
 	{
+		internal static SerializedReferenceSettingsProvider Instance { get; private set; }
+
 		private SerializedReferenceSettingsProvider() : base(
-			path: "Project/" + ObjectNames.NicifyVariableName(nameof(SerializeReference) + SLASH + nameof(Dropdown)),
+			path: "Project/" + ObjectNames.NicifyVariableName(nameof(SerializeReference)),
 			scopes: SettingsScope.Project) { }
 
 		public override void OnGUI(string searchContext)
@@ -20,10 +21,11 @@ namespace Depra.SerializeReference.Extensions.Editor.Editors
 		}
 
 		[SettingsProvider]
-		public static SettingsProvider CreateTriInspectorSettingsProvider() => new SerializedReferenceSettingsProvider
-		{
-			keywords = GetSearchKeywordsFromGUIContentProperties<Styles>(),
-		};
+		public static SettingsProvider CreateTriInspectorSettingsProvider() => Instance =
+			new SerializedReferenceSettingsProvider
+			{
+				keywords = GetSearchKeywordsFromGUIContentProperties<Styles>(),
+			};
 
 		private sealed class Styles { }
 	}

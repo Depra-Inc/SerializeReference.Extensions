@@ -17,21 +17,17 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 
 		public static Texture2D GetIcon(Type type, Texture2D @default)
 		{
-			const string SEARCH_PATTERN = "{0} t:script";
-			var guids = AssetDatabase.FindAssets(string.Format(SEARCH_PATTERN, type.Name));
-			foreach (var guid in guids)
+			var guids = AssetDatabase.FindAssets($"{type.Name} t:script");
+			if (guids.Length == 0)
 			{
-				var path = AssetDatabase.GUIDToAssetPath(guid);
-				var importer = AssetImporter.GetAtPath(path);
-				if (importer is not MonoImporter monoImporter)
-				{
-					continue;
-				}
-
-				return monoImporter.GetIcon() ?? @default;
+				return @default;
 			}
 
-			return @default;
+			var assetPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+			var importer = AssetImporter.GetAtPath(assetPath);
+			var icon = importer is MonoImporter monoImporter ? monoImporter.GetIcon() ?? @default : @default;
+
+			return icon;
 		}
 	}
 }
