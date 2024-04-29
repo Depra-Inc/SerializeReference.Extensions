@@ -1,0 +1,54 @@
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+
+using System;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+using static Depra.SerializeReference.Extensions.Editor.Internal.Module;
+
+namespace Depra.SerializeReference.Extensions.Editor.Settings
+{
+	[Serializable]
+	internal sealed class SerializeReferenceSettingsProvider : SettingsProvider
+	{
+		private static readonly string PATH = nameof(Editor) + SLASH +
+		                                      ObjectNames.NicifyVariableName(nameof(SerializeReference));
+
+		internal static SerializeReferenceSettingsProvider Instance { get; private set; }
+
+		public static bool IsAvailable() => SerializeReferenceSettings.instance != null;
+
+		[SettingsProvider]
+		public static SettingsProvider CreateTriInspectorSettingsProvider() => Instance =
+			new SerializeReferenceSettingsProvider(PATH, SettingsScope.Project)
+			{
+				keywords = GetSearchKeywordsFromGUIContentProperties<Styles>(),
+			};
+
+		private SerializedObject _serializedObject;
+
+		private SerializeReferenceSettingsProvider(string path, SettingsScope scope) : base(path, scope) { }
+
+		public override void OnActivate(string searchContext, VisualElement rootElement)
+		{
+			_serializedObject = new SerializedObject(SerializeReferenceSettings.instance);
+			var niceName = ObjectNames.NicifyVariableName(nameof(SerializeReferenceSettings));
+			var title = new Label { text = niceName }.SetHeaderStyle();
+			title.AddToClassList("title");
+			rootElement.Add(title);
+
+			var properties = new VisualElement().SetPropertiesStyle();
+			properties.AddToClassList("property-list");
+			rootElement.Add(properties);
+
+			var searchCustomIcons = new PropertyField(_serializedObject.FindProperty("_searchCustomIcons"));
+			searchCustomIcons.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
+			properties.Add(searchCustomIcons);
+
+			rootElement.Bind(_serializedObject);
+		}
+
+		private sealed class Styles { }
+	}
+}
