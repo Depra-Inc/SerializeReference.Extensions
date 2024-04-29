@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Depra.SerializeReference.Extensions.Editor.Menu;
+using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -35,8 +35,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			foreach (var type in SerializeReferenceOrderAttribute.OrderBy(_types))
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathAttr)
-					? MenuPath.SplitName(menuPathAttr.Path, Separators.ALL)
-					: MenuPath.SplitName(type.FullName, Separators.ALL);
+					? MenuPath.SplitName(menuPathAttr.Path, Module.SEPARATORS)
+					: MenuPath.SplitName(type.FullName, Module.SEPARATORS);
 
 				if (type.IsNested)
 				{

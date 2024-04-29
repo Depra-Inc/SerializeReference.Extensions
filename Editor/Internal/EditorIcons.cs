@@ -4,7 +4,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Depra.SerializeReference.Extensions.Editor.Menu
+namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
 	internal static class EditorIcons
 	{

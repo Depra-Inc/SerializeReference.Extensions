@@ -2,7 +2,7 @@
 // © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using UnityEditor;
-using static Depra.SerializeReference.Extensions.Editor.Menu.Module;
+using static Depra.SerializeReference.Extensions.Editor.Internal.Module;
 
 namespace Depra.SerializeReference.Extensions.Editor.Editors
 {

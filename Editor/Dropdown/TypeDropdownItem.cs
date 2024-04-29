@@ -2,9 +2,8 @@
 // © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
-using Depra.SerializeReference.Extensions.Editor.Menu;
+using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor.IMGUI.Controls;
-using UnityEngine;
 
 namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
@@ -15,10 +14,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		public TypeDropdownItem(Type type, string name) : base(name)
 		{
 			Type = type;
-			if (Type != null)
-			{
-				icon = (Texture2D) EditorIcons.SCRIPT_ICON.image;
-			}
+			icon = ScriptImporter.GetIcon(Type);
 		}
 	}
 }

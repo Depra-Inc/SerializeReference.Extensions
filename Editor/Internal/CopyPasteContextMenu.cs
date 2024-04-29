@@ -3,7 +3,7 @@ using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using UnityEditor;
 using UnityEngine;
 
-namespace Depra.SerializeReference.Extensions.Editor.Menu
+namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
 	[InitializeOnLoad]
 	internal sealed class CopyPasteContextMenu

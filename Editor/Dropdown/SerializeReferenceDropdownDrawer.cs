@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Depra.SerializeReference.Extensions.Editor.Menu;
+using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
+using Module = Depra.SerializeReference.Extensions.Editor.Internal.Module;
 using Object = UnityEngine.Object;
 
 namespace Depra.SerializeReference.Extensions.Editor.Dropdown
@@ -119,8 +120,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				: throw new SerializedPropertyTypeMustBeManagedReference(nameof(property));
 
 			var splitTypeName = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute subtypeAlias)
-				? MenuPath.SplitName(subtypeAlias.Path, Separators.ALL)
-				: MenuPath.SplitName(type.FullName, Separators.ALL);
+				? MenuPath.SplitName(subtypeAlias.Path, Module.SEPARATORS)
+				: MenuPath.SplitName(type.FullName, Module.SEPARATORS);
 
 			var typeName = splitTypeName[^1];
 			typeName = ObjectNames.NicifyVariableName(typeName);
@@ -142,7 +143,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			return type;
 		}
 
-		internal sealed class SerializedPropertyTypeMustBeManagedReference : ArgumentException
+		private sealed class SerializedPropertyTypeMustBeManagedReference : ArgumentException
 		{
 			public SerializedPropertyTypeMustBeManagedReference(string paramName) : base(
 				$"The serialized property type must be {nameof(SerializedPropertyType.ManagedReference)}", paramName) { }
