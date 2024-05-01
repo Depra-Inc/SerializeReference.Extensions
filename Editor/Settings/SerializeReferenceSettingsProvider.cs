@@ -42,9 +42,13 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			properties.AddToClassList("property-list");
 			rootElement.Add(properties);
 
-			var searchCustomIcons = new PropertyField(_serializedObject.FindProperty("_searchCustomIcons"));
-			searchCustomIcons.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
-			properties.Add(searchCustomIcons);
+			var iconSearchType = new PropertyField(_serializedObject.FindProperty("_metadataSearchType"));
+			iconSearchType.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
+			properties.Add(iconSearchType);
+
+			var defaultIconName = new PropertyField(_serializedObject.FindProperty("_defaultIconName"));
+			defaultIconName.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
+			properties.Add(defaultIconName);
 
 			rootElement.Bind(_serializedObject);
 		}

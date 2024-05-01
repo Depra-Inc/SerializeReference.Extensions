@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Depra.SerializeReference.Extensions
+namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
 	internal static class TypeExtensions
 	{

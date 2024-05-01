@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
@@ -32,7 +33,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			var root = new AdvancedDropdownItem("Select Type");
 			root.AddChild(new NullDropdownItem { id = itemCount++ });
 
-			foreach (var type in SerializeReferenceOrderAttribute.OrderBy(_types))
+			foreach (var type in OrderByAttribute(_types))
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathAttr)
 					? MenuPath.SplitName(menuPathAttr.Path, Module.SEPARATORS)
@@ -50,6 +51,9 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		}
 
 		protected override void ItemSelected(AdvancedDropdownItem item) => OnItemSelected?.Invoke(item);
+
+		private IEnumerable<Type> OrderByAttribute(IEnumerable<Type> self) => self.OrderBy(type =>
+			type?.GetCustomAttribute<SerializeReferenceOrderAttribute>()?.Order ?? 0);
 
 		private void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] names, ref int count)
 		{

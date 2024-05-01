@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Depra.SerializeReference.Extensions.Editor.Internal;
+using Depra.SerializeReference.Extensions.Editor.Settings;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -125,7 +126,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 			var typeName = splitTypeName[^1];
 			typeName = ObjectNames.NicifyVariableName(typeName);
-			var contentIcon = ScriptImporter.GetIcon(type, EditorIcons.DROPDOWN_ICON.image);
+			var contentIcon = SerializeReferenceSettings.instance.GetIcon(type);
 			var content = new GUIContent(typeName, contentIcon);
 			_typeNameCache.Add(fullTypename, content);
 
