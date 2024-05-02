@@ -11,7 +11,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 	[FilePath(nameof(SerializeReferenceSettings), FilePathAttribute.Location.PreferencesFolder)]
 	internal sealed class SerializeReferenceSettings : ScriptableSingleton<SerializeReferenceSettings>
 	{
-		[SerializeField] private SearchType _metadataSearchType;
+		[SerializeField] private SearchType _metadataSearchType = SearchType.ATTRIBUTE;
 		[SerializeField] private string _defaultIconName = "cs Script Icon";
 
 		public void Save() => Save(true);

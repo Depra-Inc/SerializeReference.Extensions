@@ -8,7 +8,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 		public const string MENU_PATH = nameof(SerializeReference) + SLASH + nameof(Extensions) + SLASH;
 
 		internal const string SLASH = "/";
-		internal const string UNDERSCORE = "_";
 		internal static readonly char[] SEPARATORS = { '.', '/' };
 	}
 }
