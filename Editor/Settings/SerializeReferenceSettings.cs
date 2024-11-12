@@ -41,14 +41,9 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 
 		private enum SearchType
 		{
-			[InspectorName("Off")]
-			OFF,
-
-			[InspectorName("Attribute")]
-			ATTRIBUTE,
-
-			[InspectorName("Script Importer")]
-			SCRIPT_IMPORTER
+			[InspectorName("Off")] OFF,
+			[InspectorName("Attribute")] ATTRIBUTE,
+			[InspectorName("Script Importer")] SCRIPT_IMPORTER
 		}
 	}
 }

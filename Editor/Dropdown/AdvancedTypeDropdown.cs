@@ -35,8 +35,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 			foreach (var type in OrderByAttribute(_types))
 			{
-				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathAttr)
-					? MenuPath.SplitName(menuPathAttr.Path, Module.SEPARATORS)
+				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathMeta)
+					? MenuPath.SplitName(menuPathMeta.Path, Module.SEPARATORS)
 					: MenuPath.SplitName(type.FullName, Module.SEPARATORS);
 
 				if (type.IsNested)

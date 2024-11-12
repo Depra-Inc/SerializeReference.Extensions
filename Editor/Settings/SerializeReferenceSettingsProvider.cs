@@ -5,15 +5,14 @@ using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using static Depra.SerializeReference.Extensions.Editor.Internal.Module;
 
 namespace Depra.SerializeReference.Extensions.Editor.Settings
 {
 	[Serializable]
 	internal sealed class SerializeReferenceSettingsProvider : SettingsProvider
 	{
-		private static readonly string PATH = nameof(Editor) + SLASH +
-		                                      ObjectNames.NicifyVariableName(nameof(SerializeReference));
+		private static readonly string PATH = nameof(Editor) + "/" +
+		                                      ObjectNames.NicifyVariableName(nameof(SerializeReferenceAttribute));
 
 		internal static SerializeReferenceSettingsProvider Instance { get; private set; }
 

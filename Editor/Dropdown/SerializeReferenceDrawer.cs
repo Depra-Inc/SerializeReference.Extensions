@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Depra.SerializeReference.Extensions.Editor.Internal;
 using Depra.SerializeReference.Extensions.Editor.Settings;
@@ -11,12 +10,11 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using Module = Depra.SerializeReference.Extensions.Editor.Internal.Module;
-using Object = UnityEngine.Object;
 
 namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
-	[CustomPropertyDrawer(typeof(SerializeReferenceDropdownAttribute))]
-	internal sealed class SerializeReferenceDropdownDrawer : PropertyDrawer
+	[CustomPropertyDrawer(typeof(SerializeReferenceAttribute))]
+	internal sealed class SerializeReferenceDrawer : PropertyDrawer
 	{
 		private const int MAX_LINE_COUNT = 13;
 
@@ -77,13 +75,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				? GetType(property.managedReferenceFieldTypename)
 				: throw new SerializedPropertyTypeMustBeManagedReference(nameof(property));
 
-			var derivedTypes = TypeCache
-				.GetTypesDerivedFrom(referenceType)
-				.Where(x => (x.IsPublic || x.IsNestedPublic) &&
-				            x.IsAbstract == false &&
-				            x.IsGenericType == false &&
-				            typeof(Object).IsAssignableFrom(x) == false);
-
+			var derivedTypes = fieldInfo.GetCustomAttribute<SerializeReferenceAttribute>().GetTypes(referenceType);
 			var dropdown = new AdvancedTypeDropdown(derivedTypes, MAX_LINE_COUNT, new AdvancedDropdownState());
 			dropdown.OnItemSelected += OnItemCreated;
 
@@ -148,7 +140,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		private sealed class SerializedPropertyTypeMustBeManagedReference : ArgumentException
 		{
 			public SerializedPropertyTypeMustBeManagedReference(string paramName) : base(
-				$"The serialized property type must be {nameof(SerializedPropertyType.ManagedReference)}", paramName) { }
+				$"The serialized property type must be {nameof(SerializedPropertyType.ManagedReference)}",
+				paramName) { }
 		}
 	}
 }
