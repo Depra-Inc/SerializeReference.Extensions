@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using Object = UnityEngine.Object;
 
 namespace Depra.SerializeReference.Extensions
@@ -17,12 +16,18 @@ namespace Depra.SerializeReference.Extensions
 	{
 		private static readonly Type UNITY_OBJECT_TYPE = typeof(Object);
 
-		public override IEnumerable<Type> GetTypes(Type referenceType) =>
-			from extractedTypes in TypeCache.GetTypesDerivedFrom(referenceType)
-			where extractedTypes.IsPublic || extractedTypes.IsNestedPublic
-			where !extractedTypes.IsAbstract && !extractedTypes.IsGenericType
-			where !UNITY_OBJECT_TYPE.IsAssignableFrom(extractedTypes)
-			where !IsDefined(extractedTypes, HideSerializeReferenceAttribute.TYPE)
-			select extractedTypes;
+		public override IEnumerable<Type> GetTypes(Type referenceType)
+		{
+#if UNITY_EDITOR
+			return from extractedTypes in UnityEditor.TypeCache.GetTypesDerivedFrom(referenceType)
+				where extractedTypes.IsPublic || extractedTypes.IsNestedPublic
+				where !extractedTypes.IsAbstract && !extractedTypes.IsGenericType
+				where !UNITY_OBJECT_TYPE.IsAssignableFrom(extractedTypes)
+				where !IsDefined(extractedTypes, HideSerializeReferenceAttribute.TYPE)
+				select extractedTypes;
+#else
+			return Array.Empty<Type>();
+#endif
+		}
 	}
 }
