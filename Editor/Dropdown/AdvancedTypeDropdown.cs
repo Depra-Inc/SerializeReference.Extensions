@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
@@ -16,13 +16,25 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 	/// </summary>
 	internal sealed class AdvancedTypeDropdown : AdvancedDropdown
 	{
+		private const int MAX_LINE_COUNT = 13;
 		private readonly IEnumerable<Type> _types;
+		private readonly IEnumerable<string> _typeNames;
+		private readonly Action<AdvancedDropdownItem> _onTypeSelected;
 
-		public event Action<AdvancedDropdownItem> OnItemSelected;
-
-		public AdvancedTypeDropdown(IEnumerable<Type> types, int maxLineCount, AdvancedDropdownState state) : base(state)
+		public AdvancedTypeDropdown(IEnumerable<Type> types, AdvancedDropdownState state, 
+			Action<AdvancedDropdownItem> onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
 		{
 			_types = types;
+			_onTypeSelected = onSelected;
+			var headerHeight = EditorGUIUtility.singleLineHeight * 2f;
+			minimumSize = new Vector2(minimumSize.x, EditorGUIUtility.singleLineHeight * maxLineCount + headerHeight);
+		}
+
+		public AdvancedTypeDropdown(IEnumerable<string> typeNames, AdvancedDropdownState state,
+			Action<AdvancedDropdownItem> onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
+		{
+			_typeNames = typeNames;
+			_onTypeSelected = onSelected;
 			var headerHeight = EditorGUIUtility.singleLineHeight * 2f;
 			minimumSize = new Vector2(minimumSize.x, EditorGUIUtility.singleLineHeight * maxLineCount + headerHeight);
 		}
@@ -33,11 +45,30 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			var root = new AdvancedDropdownItem("Select Type");
 			root.AddChild(new NullDropdownItem { id = itemCount++ });
 
+			if (_typeNames != null)
+			{
+				foreach (var typeName in _typeNames.OrderBy(n => n))
+				{
+					var item = new AdvancedDropdownItem(typeName) { id = itemCount++ };
+					root.AddChild(item);
+				}
+
+				return root;
+			}
+
 			foreach (var type in OrderByAttribute(_types))
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathMeta)
 					? MenuPath.SplitName(menuPathMeta.Path, Module.SEPARATORS)
 					: MenuPath.SplitName(type.FullName, Module.SEPARATORS);
+
+				if (type.IsGenericType)
+				{
+					var genericNames = type.GenericTypeArguments.Select(t => t.Name);
+					var genericParamNames = " [" + string.Join(",", genericNames) + "]";
+					var genericName = ObjectNames.NicifyVariableName(type.Name) + genericParamNames;
+					splitPath[^1] = genericName;
+				}
 
 				if (type.IsNested)
 				{
@@ -50,7 +81,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			return root;
 		}
 
-		protected override void ItemSelected(AdvancedDropdownItem item) => OnItemSelected?.Invoke(item);
+		protected override void ItemSelected(AdvancedDropdownItem item) => _onTypeSelected?.Invoke(item);
 
 		private IEnumerable<Type> OrderByAttribute(IEnumerable<Type> self) => self.OrderBy(type =>
 			type?.GetCustomAttribute<SerializeReferenceOrderAttribute>()?.Order ?? 0);
@@ -84,5 +115,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 			return item;
 		}
+
+		internal delegate void SelectionHandler(AdvancedDropdownItem item);
 	}
 }

@@ -6,6 +6,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 	internal static class Module
 	{
 		public const string MENU_PATH = nameof(SerializeReferenceAttribute) + "/" + nameof(Extensions) + "/";
-		internal static readonly char[] SEPARATORS = { '.', '/' };
+		internal static readonly char[] SEPARATORS = { '.', '/', '`' };
 	}
 }

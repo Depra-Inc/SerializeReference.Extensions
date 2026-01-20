@@ -29,5 +29,10 @@ namespace Depra.SerializeReference.Extensions
 			return Array.Empty<Type>();
 #endif
 		}
+
+		public override IEnumerable<Type> GetGenericTypes(Type referenceType)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

@@ -10,5 +10,7 @@ namespace Depra.SerializeReference.Extensions
 	public abstract class SerializeReferenceAttribute : PropertyAttribute
 	{
 		public abstract IEnumerable<Type> GetTypes(Type referenceType);
+
+		public abstract IEnumerable<Type> GetGenericTypes(Type referenceType);
 	}
 }
