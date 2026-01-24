@@ -21,7 +21,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		private readonly IEnumerable<string> _typeNames;
 		private readonly Action<AdvancedDropdownItem> _onTypeSelected;
 
-		public AdvancedTypeDropdown(IEnumerable<Type> types, AdvancedDropdownState state, 
+		public AdvancedTypeDropdown(IEnumerable<Type> types, AdvancedDropdownState state,
 			Action<AdvancedDropdownItem> onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
 		{
 			_types = types;
@@ -49,8 +49,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			{
 				foreach (var typeName in _typeNames.OrderBy(n => n))
 				{
-					var item = new AdvancedDropdownItem(typeName) { id = itemCount++ };
-					root.AddChild(item);
+					root.AddChild(new AdvancedDropdownItem(typeName) { id = itemCount++ });
 				}
 
 				return root;
@@ -64,10 +63,16 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 				if (type.IsGenericType)
 				{
-					var genericNames = type.GenericTypeArguments.Select(t => t.Name);
+					var typeName = ObjectNames.NicifyVariableName(type.Name);
+					var backtickIndex = typeName.IndexOf('`');
+					if (backtickIndex > 0)
+					{
+						typeName = typeName[..backtickIndex];
+					}
+
+					var genericNames = type.GetGenericArguments().Select(t => t.Name);
 					var genericParamNames = " [" + string.Join(",", genericNames) + "]";
-					var genericName = ObjectNames.NicifyVariableName(type.Name) + genericParamNames;
-					splitPath[^1] = genericName;
+					splitPath[^1] = typeName + genericParamNames;
 				}
 
 				if (type.IsNested)

@@ -1,9 +1,9 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Object = UnityEngine.Object;
 
 namespace Depra.SerializeReference.Extensions
@@ -16,7 +16,7 @@ namespace Depra.SerializeReference.Extensions
 	{
 		private static readonly Type UNITY_OBJECT_TYPE = typeof(Object);
 
-		public override IEnumerable<Type> GetTypes(Type referenceType)
+		public override IEnumerable<Type> GetDerivedTypes(Type referenceType)
 		{
 #if UNITY_EDITOR
 			return from extractedTypes in UnityEditor.TypeCache.GetTypesDerivedFrom(referenceType)

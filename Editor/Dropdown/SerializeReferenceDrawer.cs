@@ -15,7 +15,7 @@ using Module = Depra.SerializeReference.Extensions.Editor.Internal.Module;
 namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
 	[CustomPropertyDrawer(typeof(SerializeReferenceAttribute))]
-	internal sealed class SerializeReferenceDrawer : PropertyDrawer
+	public sealed class SerializeReferenceDrawer : PropertyDrawer
 	{
 		private static readonly GUIContent NOT_MANAGED_REFERENCE_CONTENT =
 			new("The property type is not manage reference.");
@@ -30,7 +30,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 			if (property.propertyType == SerializedPropertyType.ManagedReference)
 			{
-				DrawManagedReferenceGUI(position, property, label);
+				DrawManagedReferenceGUI(position, property);
+				EditorGUI.PropertyField(position, property, label, true);
 			}
 			else
 			{
@@ -49,44 +50,38 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) =>
 			EditorGUI.GetPropertyHeight(property, true);
 
-		private void DrawManagedReferenceGUI(Rect position, SerializedProperty property, GUIContent label)
+		private void DrawManagedReferenceGUI(Rect position, SerializedProperty property)
 		{
 			var dropdownContent = GetTypeContent(property);
-			var dropdownPosition = GetDropdownPosition(position);
-			if (EditorGUI.DropdownButton(dropdownPosition, dropdownContent, FocusType.Keyboard))
+			var dropdownPosition = new Rect(position)
 			{
-				var dropdown = _dropdowns.TryGetValue(property.managedReferenceId, out var existingDropdown)
-					? existingDropdown
-					: CreateTypeDropdown(property, position);
+				width = position.width - EditorGUIUtility.labelWidth,
+				x = position.x + EditorGUIUtility.labelWidth,
+				height = EditorGUIUtility.singleLineHeight
+			};
 
-				dropdown.Show(dropdownPosition);
+			if (!EditorGUI.DropdownButton(dropdownPosition, dropdownContent, FocusType.Keyboard))
+			{
+				return;
 			}
 
-			EditorGUI.PropertyField(position, property, label, true);
+			var dropdown = CreateTypeDropdown(property, position);
+			dropdown.Show(dropdownPosition);
 		}
-
-		private Rect GetDropdownPosition(Rect position) => new(position)
-		{
-			width = position.width - EditorGUIUtility.labelWidth,
-			x = position.x + EditorGUIUtility.labelWidth,
-			height = EditorGUIUtility.singleLineHeight
-		};
 
 		private AdvancedTypeDropdown CreateTypeDropdown(SerializedProperty property, Rect position)
 		{
 			var referenceType = ExtractTypeFromString(property.managedReferenceFieldTypename);
-			var serializeReferenceMeta = fieldInfo.GetCustomAttribute<SerializeReferenceAttribute>();
-			var derivedTypes = serializeReferenceMeta.GetTypes(referenceType);
-			var dropdown = new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(), item =>
+			var referenceAttribute = fieldInfo.GetCustomAttribute<SerializeReferenceAttribute>();
+			var derivedTypes = referenceAttribute.GetDerivedTypes(referenceType);
+
+			return new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(), item =>
 			{
 				if (item is TypeDropdownItem typeItem)
 				{
 					OnItemCreate(typeItem.Type, property, position);
 				}
 			});
-			_dropdowns.Add(property.managedReferenceId, dropdown);
-
-			return dropdown;
 		}
 
 		private void OnItemCreate(Type type, SerializedProperty property, Rect position)
@@ -104,10 +99,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				}
 				else
 				{
-					GenericTypeCreateWindow.Open(property, position, type, selectedType =>
-					{
-						
-					});
+					GenericTypeCreateWindow.Open(property, position, type, selectedType => { });
 				}
 			}
 			else

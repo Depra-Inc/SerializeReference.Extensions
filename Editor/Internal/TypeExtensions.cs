@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
 using System.Collections.Generic;
@@ -16,14 +16,14 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 		public static object CreateInstance(this Type self)
 		{
 			object newObject;
-			if (self?.GetConstructor(Type.EmptyTypes) != null)
+			//if (self?.GetConstructor(Type.EmptyTypes) != null)
 			{
 				newObject = Activator.CreateInstance(self);
 			}
-			else
-			{
-				newObject = self != null ? FormatterServices.GetUninitializedObject(self) : null;
-			}
+			// else
+			// {
+			// 	newObject = self != null ? FormatterServices.GetUninitializedObject(self) : null;
+			// }
 
 			return newObject;
 		}

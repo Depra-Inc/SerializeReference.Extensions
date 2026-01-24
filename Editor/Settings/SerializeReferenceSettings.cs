@@ -2,6 +2,7 @@
 // © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
 
 using System;
+using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
@@ -13,6 +14,11 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 	{
 		[SerializeField] private SearchType _metadataSearchType = SearchType.ATTRIBUTE;
 		[SerializeField] private string _defaultIconName = "cs Script Icon";
+
+		public static void ClearCache()
+		{
+			//ManagedReferenceEditor.ClearCache();
+		}
 
 		public void Save() => Save(true);
 

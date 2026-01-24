@@ -4,6 +4,7 @@
 using System;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Depra.SerializeReference.Extensions.Editor.Settings
@@ -33,11 +34,13 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 		{
 			_serializedObject = new SerializedObject(SerializeReferenceSettings.instance);
 			var niceName = ObjectNames.NicifyVariableName(nameof(SerializeReferenceSettings));
-			var title = new Label { text = niceName }.SetHeaderStyle();
+			var title = new Label { text = niceName };
+			SetHeaderStyle(title);
 			title.AddToClassList("title");
 			rootElement.Add(title);
 
-			var properties = new VisualElement().SetPropertiesStyle();
+			var properties = new VisualElement();
+			SetPropertiesStyle(properties);
 			properties.AddToClassList("property-list");
 			rootElement.Add(properties);
 
@@ -49,7 +52,27 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			defaultIconName.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
 			properties.Add(defaultIconName);
 
+			properties.Add(new Button(SerializeReferenceSettings.ClearCache) { text = "Clear Cache" });
+
 			rootElement.Bind(_serializedObject);
+		}
+		
+		private VisualElement SetPropertiesStyle(VisualElement self)
+		{
+			self.style.marginTop = 9;
+			self.style.marginLeft = 9;
+
+			return self;
+		}
+
+		private Label SetHeaderStyle(Label self)
+		{
+			self.style.fontSize = 19;
+			self.style.marginTop = 1;
+			self.style.marginLeft = 9;
+			self.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+			return self;
 		}
 
 		private sealed class Styles { }
