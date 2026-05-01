@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Depra.SerializeReference.Extensions
 {
-	public abstract class SerializeReferenceAttribute : PropertyAttribute
+	public abstract class SerializeReferenceAttribute : PropertyAttribute, IVirtualType
 	{
 		public abstract IEnumerable<Type> GetDerivedTypes(Type referenceType);
 		public abstract IEnumerable<Type> GetGenericTypes(Type referenceType);

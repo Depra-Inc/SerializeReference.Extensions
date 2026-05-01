@@ -65,8 +65,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			foreach (var type in types)
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathMeta)
-					? MenuPath.SplitName(menuPathMeta.Path, SerializeReferenceDrawer.SEPARATORS)
-					: MenuPath.SplitName(type.FullName, SerializeReferenceDrawer.SEPARATORS);
+					? MenuPath.SplitName(menuPathMeta.Path, SerializeReferenceUtility.SEPARATORS)
+					: MenuPath.SplitName(type.FullName, SerializeReferenceUtility.SEPARATORS);
 
 				if (type.IsGenericType)
 				{
@@ -100,9 +100,14 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 		protected override void ItemSelected(AdvancedDropdownItem item)
 		{
-			if (item is TypeDropdownItem typeItem)
+			switch (item)
 			{
-				_onTypeSelected?.Invoke(typeItem.Type);
+				case TypeDropdownItem typeItem:
+					_onTypeSelected?.Invoke(typeItem.Type);
+					break;
+				case NullDropdownItem:
+					_onTypeSelected?.Invoke(null);
+					break;
 			}
 		}
 

@@ -18,7 +18,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 
 		private const string DEFAULT_ICON = "cs Script Icon";
 
-		public static void ClearCache() => SerializeReferenceDrawer.ClearCache();
+		public static void ClearCache() => SerializeReferenceUtility.ClearCache();
 
 		public bool SortByAttribute => _sortByAttribute;
 		public bool SerializeGenericTypes => _serializeGenericTypes;
