@@ -32,7 +32,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			{
 				SearchType.OFF => defaultIcon,
 				SearchType.ATTRIBUTE => GetIconFromAttribute(type, defaultIcon),
-				SearchType.SCRIPT_IMPORTER => ScriptImporter.GetIcon(type),
+				SearchType.SCRIPT_IMPORTER => EditorIcons.GetIcon(type),
 				_ => defaultIcon
 			};
 		}

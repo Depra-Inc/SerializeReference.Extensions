@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
-	internal static class ManagedReferences
+	internal static class SerializeReferenceToolbar
 	{
 		private const string MENU_PATH = "Tools/Serialize References/";
 

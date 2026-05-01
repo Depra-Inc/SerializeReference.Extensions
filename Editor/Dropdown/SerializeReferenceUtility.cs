@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// © 2023-2026 Depra <n.melnikov@depra.org>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +14,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
 	public static class SerializeReferenceUtility
 	{
-		internal static readonly char[] SEPARATORS = { '.', '/' };
-		private static readonly Dictionary<string, GUIContent> CONTENT_CACHE = new();
+		private static readonly char[] SEPARATORS = { '.', '/' };
+		private static readonly Dictionary<string, TypeMetadata> METADATA = new();
 		private static readonly GUIContent NOT_MANAGED_REFERENCE_CONTENT = new("The property type is not manage reference.");
 
 		public static bool DrawTypeDropdown(Rect position, SerializedProperty property, IVirtualType virtualType)
@@ -23,7 +26,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				return false;
 			}
 
-			var dropdownContent = GetTypeContent(property);
+			var typeMetadata = GetOrCreateMetadata(property.managedReferenceFullTypename);
 			var dropdownPosition = new Rect(position)
 			{
 				width = position.width - EditorGUIUtility.labelWidth,
@@ -31,14 +34,18 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				height = EditorGUIUtility.singleLineHeight
 			};
 
-			if (!EditorGUI.DropdownButton(dropdownPosition, dropdownContent, FocusType.Keyboard))
+			if (!EditorGUI.DropdownButton(dropdownPosition, typeMetadata.Content, FocusType.Keyboard))
 			{
 				return true;
 			}
 
-			var referenceType = TypeExtensions.ExtractTypeFromString(property.managedReferenceFieldTypename);
-			var derivedTypes = virtualType.GetDerivedTypes(referenceType);
-			var dropdown = new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(), OnSelected);
+			if (!typeMetadata.IsInitialized)
+			{
+				var referenceType = TypeUtils.ExtractTypeFromString(property.managedReferenceFieldTypename);
+				typeMetadata.Initialize(virtualType, referenceType);
+			}
+
+			var dropdown = new AdvancedTypeDropdown(typeMetadata.DerivedTypes, new AdvancedDropdownState(), OnSelected);
 			dropdown.Show(dropdownPosition);
 			return true;
 
@@ -48,14 +55,35 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		internal static void ClearCache() => CONTENT_CACHE.Clear();
+		internal static void ClearCache() => METADATA.Clear();
+
+		internal static long CalculateCacheSizeBytes()
+		{
+			long total = 0;
+			foreach (var (key, value) in METADATA)
+			{
+				if (key != null)
+				{
+					total += sizeof(char) * key.Length;
+					total += 20;
+				}
+
+				total += TypeUtils.EstimateObjectSize(value);
+			}
+
+			return total;
+		}
+
+		internal static string[] SplitName(string name) => !string.IsNullOrWhiteSpace(name)
+			? name.Split(SEPARATORS, StringSplitOptions.RemoveEmptyEntries)
+			: Array.Empty<string>();
 
 		private static void OnItemCreate(Type type, SerializedProperty property, Rect position)
 		{
 			if (type?.IsGenericType == true)
 			{
-				var propertyType = TypeExtensions.ExtractTypeFromString(property.managedReferenceFieldTypename);
-				var concreteType = TypeExtensions.GetConcreteGenericType(propertyType, type);
+				var propertyType = TypeUtils.ExtractTypeFromString(property.managedReferenceFieldTypename);
+				var concreteType = TypeUtils.GetConcreteGenericType(propertyType, type);
 				if (concreteType != null)
 				{
 					var instance = type.CreateInstance();
@@ -65,7 +93,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				}
 				else
 				{
-					GenericTypeCreateWindow.Open(property, position, type, selectedType => { });
+					GenericTypeCreateWindow.Open(property, position, type, _ => { });
 				}
 			}
 			else
@@ -77,33 +105,31 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		private static GUIContent GetTypeContent(SerializedProperty property)
+		private static TypeMetadata GetOrCreateMetadata(string fullTypename)
 		{
-			var fullTypename = property.managedReferenceFullTypename;
+			if (METADATA.TryGetValue(fullTypename, out var metadata))
+			{
+				return metadata;
+			}
+
+			var referenceType = TypeUtils.ExtractTypeFromString(fullTypename);
+			var content = CreateContent(fullTypename, referenceType);
+			metadata = new TypeMetadata(content);
+			METADATA.Add(fullTypename, metadata);
+
+			return metadata;
+		}
+
+		private static GUIContent CreateContent(string fullTypename, Type type)
+		{
 			if (string.IsNullOrEmpty(fullTypename))
 			{
 				return NullDropdownItem.CONTENT;
 			}
 
-			if (CONTENT_CACHE.TryGetValue(fullTypename, out var cachedTypename))
-			{
-				return cachedTypename;
-			}
-
-			if (property.propertyType != SerializedPropertyType.ManagedReference)
-			{
-				Debug.LogException(new SerializedPropertyTypeMustBeManagedReference(nameof(property)));
-				return NOT_MANAGED_REFERENCE_CONTENT;
-			}
-
-			var type = TypeExtensions.ExtractTypeFromString(fullTypename);
 			if (type.TryGetCustomAttribute<SerializeReferenceMenuPathAttribute>(out var dropdownNameAttribute))
 			{
-				var splitTypeName = MenuPath.SplitName(dropdownNameAttribute.Path, SEPARATORS);
-				var customContent = new GUIContent(splitTypeName[^1]);
-				CONTENT_CACHE.Add(fullTypename, customContent);
-
-				return customContent;
+				return new GUIContent(SplitName(dropdownNameAttribute.Path)[^1]);
 			}
 
 			if (type.IsGenericType)
@@ -111,10 +137,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				var genericNames = type.GenericTypeArguments.Select(t => t.Name);
 				var genericParamNames = " [" + string.Join(",", genericNames) + "]";
 				var genericName = ObjectNames.NicifyVariableName(type.Name) + genericParamNames;
-				var genericContent = new GUIContent(genericName);
-				CONTENT_CACHE.Add(fullTypename, genericContent);
 
-				return genericContent;
+				return new GUIContent(genericName);
 			}
 
 			if (type.IsNested)
@@ -126,19 +150,24 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 					typeName = typeName.Substring(lastDot.Value + 1);
 				}
 
-				var nestedContent = new GUIContent(ObjectNames.NicifyVariableName(typeName));
-				CONTENT_CACHE.Add(fullTypename, nestedContent);
-
-				return nestedContent;
+				return new GUIContent(ObjectNames.NicifyVariableName(typeName));
 			}
 
-			var fallbackTypeName = MenuPath.SplitName(type.FullName, SEPARATORS)[^1];
+			var fallbackTypeName = SplitName(type.FullName)[^1];
 			fallbackTypeName = ObjectNames.NicifyVariableName(fallbackTypeName);
 			var contentIcon = SerializeReferenceSettings.instance.GetIcon(type);
-			var content = new GUIContent(fallbackTypeName, contentIcon);
-			CONTENT_CACHE.Add(fullTypename, content);
 
-			return content;
+			return new GUIContent(fallbackTypeName, contentIcon);
+		}
+
+		private sealed record TypeMetadata(GUIContent Content)
+		{
+			public GUIContent Content { get; } = Content;
+			public bool IsInitialized => DerivedTypes != null;
+			public IEnumerable<Type> DerivedTypes { get; private set; }
+
+			public void Initialize(IVirtualType virtualType, Type type) =>
+				DerivedTypes = virtualType.GetDerivedTypes(type);
 		}
 	}
 }

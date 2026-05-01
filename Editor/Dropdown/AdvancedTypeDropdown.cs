@@ -65,8 +65,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			foreach (var type in types)
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathMeta)
-					? MenuPath.SplitName(menuPathMeta.Path, SerializeReferenceUtility.SEPARATORS)
-					: MenuPath.SplitName(type.FullName, SerializeReferenceUtility.SEPARATORS);
+					? SerializeReferenceUtility.SplitName(menuPathMeta.Path)
+					: SerializeReferenceUtility.SplitName(type.FullName);
 
 				if (type.IsGenericType)
 				{
@@ -111,10 +111,10 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		private IEnumerable<Type> OrderByAttribute(IEnumerable<Type> self) => self.OrderBy(type =>
+		private static IEnumerable<Type> OrderByAttribute(IEnumerable<Type> self) => self.OrderBy(type =>
 			type?.GetCustomAttribute<SerializeReferenceOrderAttribute>()?.Order ?? 0);
 
-		private void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] names, ref int count)
+		private static void AddTypeToHierarchy(AdvancedDropdownItem root, Type type, string[] names, ref int count)
 		{
 			var parent = root;
 			var parentTypeNames = names[..^1];
@@ -128,7 +128,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			parent.AddChild(item);
 		}
 
-		private AdvancedDropdownItem FindOrCreateChild(AdvancedDropdownItem parent, string name, ref int count)
+		private static AdvancedDropdownItem FindOrCreateChild(AdvancedDropdownItem parent, string name, ref int count)
 		{
 			foreach (var child in parent.children)
 			{

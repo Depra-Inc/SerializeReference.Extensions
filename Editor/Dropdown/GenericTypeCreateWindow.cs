@@ -71,11 +71,11 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				var genericParam = genericParams[index];
 				if (genericParam.GetInterfaces().Length == 0)
 				{
-					targetTypes = TypeExtensions.GetAllSystemObjectTypes();
+					targetTypes = TypeUtils.GetAllSystemObjectTypes();
 				}
 				else
 				{
-					var systemObjectTypes = TypeExtensions.GetAllSystemObjectTypes();
+					var systemObjectTypes = TypeUtils.GetAllSystemObjectTypes();
 					targetTypes = TypeCache.GetTypesDerivedFrom(genericParam)
 						.Where(t => systemObjectTypes.Contains(t))
 						.ToArray();
@@ -89,7 +89,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 		private void FillSpecifiedTypesFromProperty()
 		{
-			var propertyType = TypeExtensions.ExtractTypeFromString(_property.managedReferenceFieldTypename);
+			var propertyType = TypeUtils.ExtractTypeFromString(_property.managedReferenceFieldTypename);
 			if (!propertyType.IsGenericType || !propertyType.IsInterface)
 			{
 				_specifiedTypesFromProperty = new Type[_selectedIndexes.Length];

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
@@ -11,7 +12,7 @@ using Assembly = System.Reflection.Assembly;
 
 namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
-	internal static class TypeExtensions
+	internal static class TypeUtils
 	{
 		public static Type ExtractTypeFromString(string typeName)
 		{
@@ -72,6 +73,41 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 		public static TAttribute GetCustomAttribute<TAttribute>(this Type self) where TAttribute : class =>
 			Attribute.GetCustomAttribute(self, typeof(TAttribute)) as TAttribute;
 
+		public static long EstimateObjectSize(object obj)
+		{
+			if (obj == null)
+			{
+				return 0;
+			}
+
+			var type = obj.GetType();
+			long size = 16;
+			var fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+			foreach (var field in fields)
+			{
+				var fieldType = field.FieldType;
+
+				if (fieldType.IsValueType)
+				{
+					size += System.Runtime.InteropServices.Marshal.SizeOf(fieldType);
+				}
+				else
+				{
+					var value = field.GetValue(obj);
+					if (value is string str)
+					{
+						size += sizeof(char) * str.Length + 20;
+					}
+					else
+					{
+						size += 8; // reference pointer
+					}
+				}
+			}
+
+			return size;
+		}
+		
 		private static IReadOnlyList<Type> _systemObjectTypes;
 
 		public static IReadOnlyList<Type> GetAllSystemObjectTypes()

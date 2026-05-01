@@ -2,6 +2,7 @@
 // © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
+using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -59,9 +60,38 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 				"This functionality is not available in the current version.",
 				HelpBoxMessageType.Info));
 
-			properties.Add(new Button(SerializeReferenceSettings.ClearCache) { text = "Clear Cache" });
+			var cacheRow = new VisualElement();
+			cacheRow.style.flexDirection = FlexDirection.Row;
+			cacheRow.style.alignItems = Align.Center;
+
+			var cacheSizeLabel = new Label();
+			cacheRow.Add(new Button(() =>
+			{
+				SerializeReferenceUtility.ClearCache();
+				UpdateCacheSize();
+			})
+			{
+				text = "Clear Cache"
+			});
+
+			cacheRow.Add(cacheSizeLabel);
+			properties.Add(cacheRow);
+
 			rootElement.Bind(_serializedObject);
+			UpdateCacheSize();
+
+			void UpdateCacheSize()
+			{
+				cacheSizeLabel.text = $"Cache: {FormatBytes(SerializeReferenceUtility.CalculateCacheSizeBytes())}";
+			}
 		}
+
+		private static string FormatBytes(long bytes) => bytes switch
+		{
+			< 1024 => $"{bytes} B",
+			< 1024 * 1024 => $"{bytes / 1024f:F2} KB",
+			_ => $"{bytes / (1024f * 1024f):F2} MB"
+		};
 
 		private VisualElement SetPropertiesStyle(VisualElement self)
 		{
