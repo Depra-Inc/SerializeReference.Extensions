@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Depra.SerializeReference.Extensions.Editor.Internal;
+using Depra.SerializeReference.Extensions.Editor.Settings;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -19,10 +20,10 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		private const int MAX_LINE_COUNT = 13;
 		private readonly IEnumerable<Type> _types;
 		private readonly IEnumerable<string> _typeNames;
-		private readonly Action<AdvancedDropdownItem> _onTypeSelected;
+		private readonly SelectionHandler _onTypeSelected;
 
 		public AdvancedTypeDropdown(IEnumerable<Type> types, AdvancedDropdownState state,
-			Action<AdvancedDropdownItem> onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
+			SelectionHandler onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
 		{
 			_types = types;
 			_onTypeSelected = onSelected;
@@ -31,7 +32,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		}
 
 		public AdvancedTypeDropdown(IEnumerable<string> typeNames, AdvancedDropdownState state,
-			Action<AdvancedDropdownItem> onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
+			SelectionHandler onSelected, int maxLineCount = MAX_LINE_COUNT) : base(state)
 		{
 			_typeNames = typeNames;
 			_onTypeSelected = onSelected;
@@ -55,14 +56,25 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				return root;
 			}
 
-			foreach (var type in OrderByAttribute(_types))
+			var types = _types;
+			if (SerializeReferenceSettings.instance.SortByAttribute)
+			{
+				types = OrderByAttribute(types);
+			}
+
+			foreach (var type in types)
 			{
 				var splitPath = type.TryGetCustomAttribute(out SerializeReferenceMenuPathAttribute menuPathMeta)
-					? MenuPath.SplitName(menuPathMeta.Path, Module.SEPARATORS)
-					: MenuPath.SplitName(type.FullName, Module.SEPARATORS);
+					? MenuPath.SplitName(menuPathMeta.Path, SerializeReferenceDrawer.SEPARATORS)
+					: MenuPath.SplitName(type.FullName, SerializeReferenceDrawer.SEPARATORS);
 
 				if (type.IsGenericType)
 				{
+					if (!SerializeReferenceSettings.instance.SerializeGenericTypes)
+					{
+						continue;
+					}
+
 					var typeName = ObjectNames.NicifyVariableName(type.Name);
 					var backtickIndex = typeName.IndexOf('`');
 					if (backtickIndex > 0)
@@ -86,7 +98,13 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			return root;
 		}
 
-		protected override void ItemSelected(AdvancedDropdownItem item) => _onTypeSelected?.Invoke(item);
+		protected override void ItemSelected(AdvancedDropdownItem item)
+		{
+			if (item is TypeDropdownItem typeItem)
+			{
+				_onTypeSelected?.Invoke(typeItem.Type);
+			}
+		}
 
 		private IEnumerable<Type> OrderByAttribute(IEnumerable<Type> self) => self.OrderBy(type =>
 			type?.GetCustomAttribute<SerializeReferenceOrderAttribute>()?.Order ?? 0);
@@ -121,6 +139,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			return item;
 		}
 
-		internal delegate void SelectionHandler(AdvancedDropdownItem item);
+		internal delegate void SelectionHandler(Type item);
 	}
 }

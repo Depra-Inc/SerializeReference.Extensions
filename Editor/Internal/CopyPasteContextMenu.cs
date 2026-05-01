@@ -1,5 +1,4 @@
 ﻿using System;
-using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using UnityEditor;
 using UnityEngine;
 
@@ -23,17 +22,17 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 			}
 
 			var copyProperty = property.Copy();
-			var copyContent = new GUIContent(ObjectNames.NicifyVariableName(nameof(CopySerializeReference)));
+			var copyContent = new GUIContent("Copy Serialize Reference");
 			menu.AddItem(copyContent, false, _ => { CopySerializeReference(copyProperty); }, null);
-			var pasteContent = new GUIContent(ObjectNames.NicifyVariableName(nameof(PasteSerializeReference)));
+			var pasteContent = new GUIContent("Paste Serialize Reference");
 			menu.AddItem(pasteContent, false, _ => PasteSerializeReference(copyProperty), null);
-			if (property.IsArrayElement() == false)
+			if (!property.IsArrayElement())
 			{
 				return;
 			}
 
-			var duplicateTitle = ObjectNames.NicifyVariableName(nameof(DuplicateSerializeReferenceArrayElement));
-			menu.AddItem(new GUIContent(duplicateTitle), false, _ => DuplicateSerializeReferenceArrayElement(copyProperty), null);
+			var duplicateContent = new GUIContent("Duplicate Serialize Reference Array Element");
+			menu.AddItem(duplicateContent, false, _ => DuplicateSerializeReferenceArrayElement(copyProperty), null);
 		}
 
 		private static void CopySerializeReference(SerializedProperty property)
@@ -86,6 +85,23 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 
 			property.serializedObject.ApplyModifiedProperties();
 			property.serializedObject.Update();
+		}
+	}
+
+	internal static class SerializedPropertyExtensions
+	{
+		private const string ARRAY_PROPERTY_SUBSTRING = ".Array.data[";
+
+		public static bool IsArrayElement(this SerializedProperty self) =>
+			self.propertyPath.Contains(ARRAY_PROPERTY_SUBSTRING);
+
+		public static SerializedProperty GetArrayPropertyFromArrayElement(this SerializedProperty self)
+		{
+			var path = self.propertyPath;
+			var startIndexPropertyPath = path.IndexOf(ARRAY_PROPERTY_SUBSTRING, StringComparison.Ordinal);
+			var propertyPath = path.Remove(startIndexPropertyPath);
+
+			return self.serializedObject.FindProperty(propertyPath);
 		}
 	}
 }

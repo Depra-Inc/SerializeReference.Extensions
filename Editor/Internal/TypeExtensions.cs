@@ -4,29 +4,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using Assembly = System.Reflection.Assembly;
 
 namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
 	internal static class TypeExtensions
 	{
-		public static object CreateInstance(this Type self)
+		public static Type ExtractTypeFromString(string typeName)
 		{
-			object newObject;
-			//if (self?.GetConstructor(Type.EmptyTypes) != null)
+			if (string.IsNullOrEmpty(typeName))
 			{
-				newObject = Activator.CreateInstance(self);
+				return null;
 			}
-			// else
-			// {
-			// 	newObject = self != null ? FormatterServices.GetUninitializedObject(self) : null;
-			// }
 
-			return newObject;
+			var splitFieldTypename = typeName.Split(' ');
+			var assemblyName = splitFieldTypename[0];
+			assemblyName = assemblyName == "Assembly" ? "Assembly-CSharp" : assemblyName;
+
+			var subStringTypeName = splitFieldTypename[1];
+			if (splitFieldTypename.Length > 2)
+			{
+				subStringTypeName = typeName[(assemblyName.Length + 1)..];
+			}
+
+			var assembly = Assembly.Load(assemblyName);
+			var targetType = assembly.GetType(subStringTypeName);
+
+			return targetType;
 		}
+
+		public static object CreateInstance(this Type self) => Activator.CreateInstance(self);
 
 		public static Type GetConcreteGenericType(Type propertyType, Type genericType)
 		{
@@ -55,79 +65,55 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 		public static bool TryGetCustomAttribute<TAttribute>(this Type self, out TAttribute attribute)
 			where TAttribute : class
 		{
-			attribute = GetCustomAttribute<TAttribute>(self);
+			attribute = self.GetCustomAttribute<TAttribute>();
 			return attribute != null;
 		}
 
 		public static TAttribute GetCustomAttribute<TAttribute>(this Type self) where TAttribute : class =>
 			Attribute.GetCustomAttribute(self, typeof(TAttribute)) as TAttribute;
-		
-		public static IEnumerable<Type> GetAllTypesInCurrentDomain()
-		{
-			var currentDomain = AppDomain.CurrentDomain;
-			// if (cachedDomainTypes.TryGetValue(currentDomain, out var cachedTypes))
-			// {
-			// 	return cachedTypes;
-			// }
 
-			var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			var types = new List<Type>();
-			foreach (var assembly in assemblies)
-			{
-				try
-				{
-					types.AddRange(assembly.GetTypes());
-				}
-				catch (Exception exception)
-				{
-					Debug.LogException(exception);
-				}
-			}
-
-			//cachedDomainTypes.Add(currentDomain, types);
-
-			return types;
-		}
-		
 		private static IReadOnlyList<Type> _systemObjectTypes;
 
 		public static IReadOnlyList<Type> GetAllSystemObjectTypes()
 		{
-			if (_systemObjectTypes == null)
+			if (_systemObjectTypes != null)
 			{
-				var assemblies = CompilationPipeline.GetAssemblies();
-				var playerAssemblies = assemblies.Where(t => !t.flags.HasFlag(AssemblyFlags.EditorAssembly))
-					.Select(t => t.name).ToArray();
-				var baseType = typeof(object);
-				var typesCollection = TypeCache.GetTypesDerivedFrom(baseType);
-				var customTypes = typesCollection.Where(IsValidTypeForGenericParameter).OrderBy(t => t.FullName);
-
-				var typesList = new List<Type>();
-				typesList.AddRange(GetBuiltInUnitySerializeTypes());
-				typesList.AddRange(customTypes);
-				_systemObjectTypes = typesList.ToArray();
-
-				bool IsValidTypeForGenericParameter(Type t)
-				{
-					var isUnityObjectType = t.IsSubclassOf(typeof(UnityEngine.Object));
-					var isFinalSerializeType = !t.IsAbstract && !t.IsInterface && !t.IsGenericType && t.IsSerializable;
-					var isEnum = t.IsEnum;
-					var isTargetType = playerAssemblies.Any(asm => t.Assembly.FullName.StartsWith(asm)) ||
-					                   t.Assembly.FullName.StartsWith(nameof(UnityEngine));
-
-					return isTargetType && (isFinalSerializeType || isEnum || isUnityObjectType);
-				}
+				return _systemObjectTypes;
 			}
 
-			return _systemObjectTypes;
-		}
-		
-		private static Type[] GetBuiltInUnitySerializeTypes()
-		{
-			return GetDefaultTypes();
+			var playerAssemblies = CompilationPipeline.GetAssemblies()
+				.Where(a => !a.flags.HasFlag(AssemblyFlags.EditorAssembly))
+				.Select(a => a.name)
+				.ToHashSet();
+
+			var result = new List<Type>(512);
+			result.AddRange(GetBuiltInUnitySerializeTypes());
+			result.AddRange(TypeCache.GetTypesDerivedFrom<object>().Where(type => IsValid(type, playerAssemblies)));
+			result.Sort((a, b) => string.CompareOrdinal(a.FullName, b.FullName));
+
+			return _systemObjectTypes = result;
+
+			static bool IsValid(Type t, HashSet<string> assemblies)
+			{
+				var asmName = t.Assembly.GetName().Name;
+				if (!assemblies.Contains(asmName) && asmName != nameof(UnityEngine))
+				{
+					return false;
+				}
+
+				if (t.IsEnum || typeof(UnityEngine.Object).IsAssignableFrom(t))
+				{
+					return true;
+				}
+
+				return t.IsSerializable &&
+				       !t.IsAbstract &&
+				       !t.IsInterface &&
+				       !t.IsGenericType;
+			}
 		}
 
-		private static Type[] GetDefaultTypes()
+		private static Type[] GetBuiltInUnitySerializeTypes()
 		{
 			return new[]
 			{

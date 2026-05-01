@@ -9,7 +9,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
 	internal sealed class NullDropdownItem : AdvancedDropdownItem
 	{
-		public static readonly GUIContent CONTENT = new(DISPLAY_NAME, EditorIcons.NULL_ICON.image);
+		public static readonly GUIContent CONTENT = new(DISPLAY_NAME, EditorIcons.NULL_ICON);
 		private const string DISPLAY_NAME = "<null>";
 
 		public NullDropdownItem() : base(DISPLAY_NAME) { }

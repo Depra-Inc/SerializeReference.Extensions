@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
 using Depra.SerializeReference.Extensions.Editor.Dropdown;
@@ -13,18 +13,21 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 	internal sealed class SerializeReferenceSettings : ScriptableSingleton<SerializeReferenceSettings>
 	{
 		[SerializeField] private SearchType _metadataSearchType = SearchType.ATTRIBUTE;
-		[SerializeField] private string _defaultIconName = "cs Script Icon";
+		[SerializeField] private bool _sortByAttribute;
+		[SerializeField] private bool _serializeGenericTypes;
 
-		public static void ClearCache()
-		{
-			//ManagedReferenceEditor.ClearCache();
-		}
+		private const string DEFAULT_ICON = "cs Script Icon";
+
+		public static void ClearCache() => SerializeReferenceDrawer.ClearCache();
+
+		public bool SortByAttribute => _sortByAttribute;
+		public bool SerializeGenericTypes => _serializeGenericTypes;
 
 		public void Save() => Save(true);
 
 		public Texture2D GetIcon(Type type)
 		{
-			var defaultIcon = EditorIcons.GetIcon(_defaultIconName).image as Texture2D;
+			var defaultIcon = EditorIcons.GetIcon(DEFAULT_ICON);
 			return _metadataSearchType switch
 			{
 				SearchType.OFF => defaultIcon,
@@ -34,15 +37,15 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			};
 		}
 
-		private Texture2D GetIconFromAttribute(Type type, Texture2D defaultIcon)
+		private static Texture2D GetIconFromAttribute(Type type, Texture2D defaultIcon)
 		{
-			if (type.TryGetCustomAttribute<SerializeReferenceIconAttribute>(out var iconInfo) == false ||
-			    string.IsNullOrEmpty(iconInfo.Name))
+			if (type.TryGetCustomAttribute<SerializeReferenceIconAttribute>(out var iconInfo) &&
+			    !string.IsNullOrEmpty(iconInfo.Name))
 			{
-				return defaultIcon;
+				return EditorIcons.GetIcon(iconInfo.Name);
 			}
 
-			return EditorIcons.GetIcon(iconInfo.Name).image as Texture2D;
+			return defaultIcon;
 		}
 
 		private enum SearchType

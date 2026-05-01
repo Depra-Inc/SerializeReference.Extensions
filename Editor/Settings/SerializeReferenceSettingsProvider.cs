@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
 using UnityEditor;
@@ -12,8 +12,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 	[Serializable]
 	internal sealed class SerializeReferenceSettingsProvider : SettingsProvider
 	{
-		private static readonly string PATH = nameof(Editor) + "/" +
-		                                      ObjectNames.NicifyVariableName(nameof(SerializeReferenceAttribute));
+		private const string PATH = "Editor/Serialize References";
 
 		internal static SerializeReferenceSettingsProvider Instance { get; private set; }
 
@@ -48,15 +47,22 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			iconSearchType.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
 			properties.Add(iconSearchType);
 
-			var defaultIconName = new PropertyField(_serializedObject.FindProperty("_defaultIconName"));
-			defaultIconName.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
-			properties.Add(defaultIconName);
+			var sortToggle = new PropertyField(_serializedObject.FindProperty("_sortByAttribute"));
+			sortToggle.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
+			properties.Add(sortToggle);
+
+			var genericToggle = new PropertyField(_serializedObject.FindProperty("_serializeGenericTypes"));
+			genericToggle.SetEnabled(false);
+			properties.Add(genericToggle);
+
+			properties.Add(new HelpBox(
+				"This functionality is not available in the current version.",
+				HelpBoxMessageType.Info));
 
 			properties.Add(new Button(SerializeReferenceSettings.ClearCache) { text = "Clear Cache" });
-
 			rootElement.Bind(_serializedObject);
 		}
-		
+
 		private VisualElement SetPropertiesStyle(VisualElement self)
 		{
 			self.style.marginTop = 9;

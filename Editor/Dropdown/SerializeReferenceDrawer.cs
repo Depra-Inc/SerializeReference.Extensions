@@ -10,18 +10,19 @@ using Depra.SerializeReference.Extensions.Editor.Settings;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
-using Module = Depra.SerializeReference.Extensions.Editor.Internal.Module;
 
 namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 {
 	[CustomPropertyDrawer(typeof(SerializeReferenceAttribute))]
 	public sealed class SerializeReferenceDrawer : PropertyDrawer
 	{
+		internal static readonly char[] SEPARATORS = { '.', '/' };
 		private static readonly GUIContent NOT_MANAGED_REFERENCE_CONTENT =
 			new("The property type is not manage reference.");
 
-		private readonly Dictionary<string, GUIContent> _typeNameCache = new();
-		private readonly Dictionary<long, AdvancedTypeDropdown> _dropdowns = new();
+		private static readonly Dictionary<string, GUIContent> CONTENT_CACHE = new();
+
+		public static void ClearCache() => CONTENT_CACHE.Clear();
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
@@ -71,24 +72,18 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 		private AdvancedTypeDropdown CreateTypeDropdown(SerializedProperty property, Rect position)
 		{
-			var referenceType = ExtractTypeFromString(property.managedReferenceFieldTypename);
+			var referenceType = TypeExtensions.ExtractTypeFromString(property.managedReferenceFieldTypename);
 			var referenceAttribute = fieldInfo.GetCustomAttribute<SerializeReferenceAttribute>();
 			var derivedTypes = referenceAttribute.GetDerivedTypes(referenceType);
-
-			return new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(), item =>
-			{
-				if (item is TypeDropdownItem typeItem)
-				{
-					OnItemCreate(typeItem.Type, property, position);
-				}
-			});
+			return new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(),
+				type => OnItemCreate(type, property, position));
 		}
 
 		private void OnItemCreate(Type type, SerializedProperty property, Rect position)
 		{
 			if (type?.IsGenericType == true)
 			{
-				var propertyType = ExtractTypeFromString(property.managedReferenceFieldTypename);
+				var propertyType = TypeExtensions.ExtractTypeFromString(property.managedReferenceFieldTypename);
 				var concreteType = TypeExtensions.GetConcreteGenericType(propertyType, type);
 				if (concreteType != null)
 				{
@@ -119,7 +114,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				return NullDropdownItem.CONTENT;
 			}
 
-			if (_typeNameCache.TryGetValue(fullTypename, out var cachedTypename))
+			if (CONTENT_CACHE.TryGetValue(fullTypename, out var cachedTypename))
 			{
 				return cachedTypename;
 			}
@@ -130,14 +125,12 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				return NOT_MANAGED_REFERENCE_CONTENT;
 			}
 
-			var type = ExtractTypeFromString(property.managedReferenceFullTypename);
-			var typesWithNames = TypeCache.GetTypesWithAttribute(typeof(SerializeReferenceMenuPathAttribute));
-			if (typesWithNames.Contains(type))
+			var type = TypeExtensions.ExtractTypeFromString(property.managedReferenceFullTypename);
+			if (type.TryGetCustomAttribute<SerializeReferenceMenuPathAttribute>(out var dropdownNameAttribute))
 			{
-				var dropdownNameAttribute = type.GetCustomAttribute<SerializeReferenceMenuPathAttribute>();
-				var splitTypeName = MenuPath.SplitName(dropdownNameAttribute.Path, Module.SEPARATORS);
+				var splitTypeName = MenuPath.SplitName(dropdownNameAttribute.Path, SEPARATORS);
 				var customContent = new GUIContent(splitTypeName[^1]);
-				_typeNameCache.Add(fullTypename, customContent);
+				CONTENT_CACHE.Add(fullTypename, customContent);
 
 				return customContent;
 			}
@@ -148,7 +141,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				var genericParamNames = " [" + string.Join(",", genericNames) + "]";
 				var genericName = ObjectNames.NicifyVariableName(type.Name) + genericParamNames;
 				var genericContent = new GUIContent(genericName);
-				_typeNameCache.Add(fullTypename, genericContent);
+				CONTENT_CACHE.Add(fullTypename, genericContent);
 
 				return genericContent;
 			}
@@ -163,41 +156,18 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				}
 
 				var nestedContent = new GUIContent(ObjectNames.NicifyVariableName(typeName));
-				_typeNameCache.Add(fullTypename, nestedContent);
+				CONTENT_CACHE.Add(fullTypename, nestedContent);
 
 				return nestedContent;
 			}
 
-			var fallbackTypeName = MenuPath.SplitName(type.FullName, Module.SEPARATORS)[^1];
+			var fallbackTypeName = MenuPath.SplitName(type.FullName, SEPARATORS)[^1];
 			fallbackTypeName = ObjectNames.NicifyVariableName(fallbackTypeName);
 			var contentIcon = SerializeReferenceSettings.instance.GetIcon(type);
 			var content = new GUIContent(fallbackTypeName, contentIcon);
-			_typeNameCache.Add(fullTypename, content);
+			CONTENT_CACHE.Add(fullTypename, content);
 
 			return content;
-		}
-
-		public static Type ExtractTypeFromString(string typeName)
-		{
-			if (string.IsNullOrEmpty(typeName))
-			{
-				return null;
-			}
-
-			var splitFieldTypename = typeName.Split(' ');
-			var assemblyName = splitFieldTypename[0];
-			assemblyName = assemblyName == "Assembly" ? "Assembly-CSharp" : assemblyName;
-
-			var subStringTypeName = splitFieldTypename[1];
-			if (splitFieldTypename.Length > 2)
-			{
-				subStringTypeName = typeName[(assemblyName.Length + 1)..];
-			}
-
-			var assembly = Assembly.Load(assemblyName);
-			var targetType = assembly.GetType(subStringTypeName);
-
-			return targetType;
 		}
 
 		private sealed class SerializedPropertyTypeMustBeManagedReference : ArgumentException

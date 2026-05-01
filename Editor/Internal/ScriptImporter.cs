@@ -1,5 +1,5 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
 using UnityEditor;
@@ -9,13 +9,9 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
 	internal static class ScriptImporter
 	{
-		private static readonly Texture2D DEFAULT_ICON = (Texture2D) EditorIcons.SCRIPT_ICON.image;
+		public static Texture2D GetIcon(Type type) => GetIcon(type, EditorIcons.SCRIPT_ICON);
 
-		public static Texture2D GetIcon(Type type) => GetIcon(type, DEFAULT_ICON);
-
-		public static Texture2D GetIcon(Type type, Texture @default) => GetIcon(type, (Texture2D) @default);
-
-		public static Texture2D GetIcon(Type type, Texture2D @default)
+		private static Texture2D GetIcon(Type type, Texture2D @default)
 		{
 			var guids = AssetDatabase.FindAssets($"{type.Name} t:script");
 			if (guids.Length == 0)

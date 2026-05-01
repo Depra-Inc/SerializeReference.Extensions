@@ -89,7 +89,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 
 		private void FillSpecifiedTypesFromProperty()
 		{
-			var propertyType = SerializeReferenceDrawer.ExtractTypeFromString(_property.managedReferenceFieldTypename);
+			var propertyType = TypeExtensions.ExtractTypeFromString(_property.managedReferenceFieldTypename);
 			if (!propertyType.IsGenericType || !propertyType.IsInterface)
 			{
 				_specifiedTypesFromProperty = new Type[_selectedIndexes.Length];
@@ -242,9 +242,9 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			var dropdown = new AdvancedTypeDropdown(currentTypeNames, new AdvancedDropdownState(), ApplySelectedTypeIndex);
 			dropdown.Show(new Rect(selectedButton.transform.position, selectedButton.transform.scale));
 
-			void ApplySelectedTypeIndex(AdvancedDropdownItem item)
+			void ApplySelectedTypeIndex(Type item)
 			{
-				_selectedIndexes[genericParamIndex] = item.id;
+				//_selectedIndexes[genericParamIndex] = item.id;
 				RefreshGenericParameterButton(genericParamIndex);
 				RefreshGenerateGenericButton();
 			}
