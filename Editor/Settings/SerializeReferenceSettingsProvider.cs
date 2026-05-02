@@ -1,9 +1,11 @@
 ﻿// SPDX-License-Identifier: Apache-2.0
-// © 2023-2024 Nikolay Melnikov <n.melnikov@depra.org>
+// © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
+using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Depra.SerializeReference.Extensions.Editor.Settings
@@ -11,8 +13,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 	[Serializable]
 	internal sealed class SerializeReferenceSettingsProvider : SettingsProvider
 	{
-		private static readonly string PATH = nameof(Editor) + "/" +
-		                                      ObjectNames.NicifyVariableName(nameof(SerializeReferenceAttribute));
+		private const string PATH = "Editor/Serialize References";
 
 		internal static SerializeReferenceSettingsProvider Instance { get; private set; }
 
@@ -33,11 +34,13 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 		{
 			_serializedObject = new SerializedObject(SerializeReferenceSettings.instance);
 			var niceName = ObjectNames.NicifyVariableName(nameof(SerializeReferenceSettings));
-			var title = new Label { text = niceName }.SetHeaderStyle();
+			var title = new Label { text = niceName };
+			SetHeaderStyle(title);
 			title.AddToClassList("title");
 			rootElement.Add(title);
 
-			var properties = new VisualElement().SetPropertiesStyle();
+			var properties = new VisualElement();
+			SetPropertiesStyle(properties);
 			properties.AddToClassList("property-list");
 			rootElement.Add(properties);
 
@@ -45,11 +48,67 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 			iconSearchType.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
 			properties.Add(iconSearchType);
 
-			var defaultIconName = new PropertyField(_serializedObject.FindProperty("_defaultIconName"));
-			defaultIconName.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
-			properties.Add(defaultIconName);
+			var sortToggle = new PropertyField(_serializedObject.FindProperty("_sortByAttribute"));
+			sortToggle.RegisterValueChangeCallback(_ => SerializeReferenceSettings.instance.Save());
+			properties.Add(sortToggle);
+
+			var genericToggle = new PropertyField(_serializedObject.FindProperty("_serializeGenericTypes"));
+			genericToggle.SetEnabled(false);
+			properties.Add(genericToggle);
+
+			properties.Add(new HelpBox(
+				"This functionality is not available in the current version.",
+				HelpBoxMessageType.Info));
+
+			var cacheRow = new VisualElement();
+			cacheRow.style.flexDirection = FlexDirection.Row;
+			cacheRow.style.alignItems = Align.Center;
+
+			var cacheSizeLabel = new Label();
+			cacheRow.Add(new Button(() =>
+			{
+				SerializeReferenceUtility.ClearCache();
+				UpdateCacheSize();
+			})
+			{
+				text = "Clear Cache"
+			});
+
+			cacheRow.Add(cacheSizeLabel);
+			properties.Add(cacheRow);
 
 			rootElement.Bind(_serializedObject);
+			UpdateCacheSize();
+
+			void UpdateCacheSize()
+			{
+				cacheSizeLabel.text = $"Cache: {FormatBytes(SerializeReferenceUtility.CalculateCacheSizeBytes())}";
+			}
+		}
+
+		private static string FormatBytes(long bytes) => bytes switch
+		{
+			< 1024 => $"{bytes} B",
+			< 1024 * 1024 => $"{bytes / 1024f:F2} KB",
+			_ => $"{bytes / (1024f * 1024f):F2} MB"
+		};
+
+		private VisualElement SetPropertiesStyle(VisualElement self)
+		{
+			self.style.marginTop = 9;
+			self.style.marginLeft = 9;
+
+			return self;
+		}
+
+		private Label SetHeaderStyle(Label self)
+		{
+			self.style.fontSize = 19;
+			self.style.marginTop = 1;
+			self.style.marginLeft = 9;
+			self.style.unityFontStyleAndWeight = FontStyle.Bold;
+
+			return self;
 		}
 
 		private sealed class Styles { }

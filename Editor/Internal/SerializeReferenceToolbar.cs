@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿// SPDX-License-Identifier: Apache-2.0
+// © 2023-2026 Depra <n.melnikov@depra.org>
+
+using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
-using static Depra.SerializeReference.Extensions.Editor.Internal.Module;
 
 namespace Depra.SerializeReference.Extensions.Editor.Internal
 {
-	internal static class ManagedReferences
+	internal static class SerializeReferenceToolbar
 	{
-		[MenuItem(MENU_PATH + nameof(FindMissingTypesOnScriptableObjects))]
+		private const string MENU_PATH = "Tools/Serialize References/";
+
+		[MenuItem(MENU_PATH + "Find Missing Types in ScriptableObjects")]
 		public static void FindMissingTypesOnScriptableObjects()
 		{
 			var report = new StringBuilder();
@@ -44,7 +48,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Internal
 			Debug.Log(report.ToString());
 		}
 
-		[MenuItem(MENU_PATH + nameof(ClearMissingTypesOnScriptableObjects))]
+		[MenuItem(MENU_PATH + "Clear Missing Types on ScriptableObjects")]
 		public static void ClearMissingTypesOnScriptableObjects()
 		{
 			var report = new StringBuilder();
