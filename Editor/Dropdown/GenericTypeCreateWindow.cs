@@ -240,7 +240,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 		{
 			var currentTypeNames = _typeNamesForParameters[genericParamIndex];
 			var dropdown = new AdvancedTypeDropdown(currentTypeNames, new AdvancedDropdownState(), ApplySelectedTypeIndex);
-			dropdown.Show(new Rect(selectedButton.transform.position, selectedButton.transform.scale));
+			dropdown.Show(new Rect(selectedButton.resolvedStyle.translate, selectedButton.resolvedStyle.scale.value));
 
 			void ApplySelectedTypeIndex(Type item)
 			{

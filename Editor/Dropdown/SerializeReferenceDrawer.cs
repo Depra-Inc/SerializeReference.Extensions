@@ -26,8 +26,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		public override bool CanCacheInspectorGUI(SerializedProperty property) => true;
-
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label) =>
 			EditorGUI.GetPropertyHeight(property, true);
 	}

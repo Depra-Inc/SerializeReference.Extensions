@@ -15,7 +15,8 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 	public static class SerializeReferenceUtility
 	{
 		private static readonly char[] SEPARATORS = { '.', '/' };
-		private static readonly Dictionary<string, TypeMetadata> METADATA = new();
+		private static readonly Dictionary<string, GUIContent> CONTENT_CACHE = new();
+		private static readonly Dictionary<string, Type[]> DERIVED_TYPES_CACHE = new();
 		private static readonly GUIContent NOT_MANAGED_REFERENCE_CONTENT = new("The property type is not manage reference.");
 
 		public static bool DrawTypeDropdown(Rect position, SerializedProperty property, IVirtualType virtualType)
@@ -26,7 +27,7 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				return false;
 			}
 
-			var typeMetadata = GetOrCreateMetadata(property.managedReferenceFullTypename);
+			var content = GetOrCreateContent(property.managedReferenceFullTypename);
 			var dropdownPosition = new Rect(position)
 			{
 				width = position.width - EditorGUIUtility.labelWidth,
@@ -34,18 +35,20 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 				height = EditorGUIUtility.singleLineHeight
 			};
 
-			if (!EditorGUI.DropdownButton(dropdownPosition, typeMetadata.Content, FocusType.Keyboard))
+			if (!EditorGUI.DropdownButton(dropdownPosition, content, FocusType.Keyboard))
 			{
 				return true;
 			}
 
-			if (!typeMetadata.IsInitialized)
+			var fieldTypename = property.managedReferenceFieldTypename;
+			if (!DERIVED_TYPES_CACHE.TryGetValue(fieldTypename, out var derivedTypes))
 			{
-				var referenceType = TypeUtils.ExtractTypeFromString(property.managedReferenceFieldTypename);
-				typeMetadata.Initialize(virtualType, referenceType);
+				var referenceType = TypeUtils.ExtractTypeFromString(fieldTypename);
+				derivedTypes = virtualType.GetDerivedTypes(referenceType).ToArray();
+				DERIVED_TYPES_CACHE.Add(fieldTypename, derivedTypes);
 			}
 
-			var dropdown = new AdvancedTypeDropdown(typeMetadata.DerivedTypes, new AdvancedDropdownState(), OnSelected);
+			var dropdown = new AdvancedTypeDropdown(derivedTypes, new AdvancedDropdownState(), OnSelected);
 			dropdown.Show(dropdownPosition);
 			return true;
 
@@ -55,22 +58,37 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		internal static void ClearCache() => METADATA.Clear();
+		internal static void ClearCache()
+		{
+			CONTENT_CACHE.Clear();
+			DERIVED_TYPES_CACHE.Clear();
+		}
 
 		internal static long CalculateCacheSizeBytes()
 		{
 			long total = 0;
-			foreach (var (key, value) in METADATA)
+			foreach (var (key, value) in CONTENT_CACHE)
 			{
 				if (key != null)
 				{
 					total += sizeof(char) * key.Length;
 					total += 20;
 				}
-
+ 
 				total += TypeUtils.EstimateObjectSize(value);
 			}
-
+ 
+			foreach (var (key, value) in DERIVED_TYPES_CACHE)
+			{
+				if (key != null)
+				{
+					total += sizeof(char) * key.Length;
+					total += 20;
+				}
+ 
+				total += IntPtr.Size * (value?.Length ?? 0);
+			}
+ 
 			return total;
 		}
 
@@ -105,19 +123,23 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			}
 		}
 
-		private static TypeMetadata GetOrCreateMetadata(string fullTypename)
+		private static GUIContent GetOrCreateContent(string fullTypename)
 		{
-			if (METADATA.TryGetValue(fullTypename, out var metadata))
+			if (string.IsNullOrEmpty(fullTypename))
 			{
-				return metadata;
+				return NullDropdownItem.CONTENT;
 			}
 
-			var referenceType = TypeUtils.ExtractTypeFromString(fullTypename);
-			var content = CreateContent(fullTypename, referenceType);
-			metadata = new TypeMetadata(content);
-			METADATA.Add(fullTypename, metadata);
+			if (CONTENT_CACHE.TryGetValue(fullTypename, out var content))
+			{
+				return content;
+			}
 
-			return metadata;
+			var type = TypeUtils.ExtractTypeFromString(fullTypename);
+			content = CreateContent(fullTypename, type);
+			CONTENT_CACHE.Add(fullTypename, content);
+
+			return content;
 		}
 
 		private static GUIContent CreateContent(string fullTypename, Type type)
@@ -158,16 +180,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Dropdown
 			var contentIcon = SerializeReferenceSettings.instance.GetIcon(type);
 
 			return new GUIContent(fallbackTypeName, contentIcon);
-		}
-
-		private sealed record TypeMetadata(GUIContent Content)
-		{
-			public GUIContent Content { get; } = Content;
-			public bool IsInitialized => DerivedTypes != null;
-			public IEnumerable<Type> DerivedTypes { get; private set; }
-
-			public void Initialize(IVirtualType virtualType, Type type) =>
-				DerivedTypes = virtualType.GetDerivedTypes(type);
 		}
 	}
 }

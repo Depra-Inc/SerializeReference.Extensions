@@ -2,7 +2,6 @@
 // © 2023-2026 Depra <n.melnikov@depra.org>
 
 using System;
-using Depra.SerializeReference.Extensions.Editor.Dropdown;
 using Depra.SerializeReference.Extensions.Editor.Internal;
 using UnityEditor;
 using UnityEngine;
@@ -17,8 +16,6 @@ namespace Depra.SerializeReference.Extensions.Editor.Settings
 		[SerializeField] private bool _serializeGenericTypes;
 
 		private const string DEFAULT_ICON = "cs Script Icon";
-
-		public static void ClearCache() => SerializeReferenceUtility.ClearCache();
 
 		public bool SortByAttribute => _sortByAttribute;
 		public bool SerializeGenericTypes => _serializeGenericTypes;
